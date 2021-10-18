@@ -58,6 +58,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
     private DcMotor frontRightDrive = null;
     private DcMotor backLeftDrive = null;
     private DcMotor backRightDrive = null;
+    private DcMotor carousel = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -73,6 +74,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightMotor");
         backLeftDrive  = hardwareMap.get(DcMotor.class, "backLeftMotor");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightMotor");
+        carousel = hardwareMap.get(DcMotor.class, "carousel");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -80,6 +82,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
+        carousel.setDirection(DcMotor.Direction.FORWARD);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -110,9 +113,12 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         double frontRightPower;
         double backLeftPower;
         double backRightPower;
+        double carouselPower;
         double fltForward;
         double fltStrafe;
         double fltPivot;
+
+
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
@@ -126,10 +132,23 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         fltStrafe = gamepad1.left_stick_x;
         fltPivot = gamepad1.right_stick_x;
 
+
         frontLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
         frontRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
         backLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
         backRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+
+        if (gamepad1.left_bumper) {
+            carousel.setPower(-0.7);
+        } else {
+            carousel.setPower(0);
+        }
+
+        if (gamepad1.right_bumper) {
+            carousel.setPower(0.5);
+        } else {
+            carousel.setPower(0);
+        }
 
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
@@ -137,10 +156,11 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         // rightPower = -gamepad1.right_stick_y ;
 
         // Send calculated power to wheels
-        frontLeftDrive.setPower(fltForward + fltStrafe + -fltPivot);
-        frontRightDrive.setPower(fltForward + -fltStrafe + fltPivot);
-        backLeftDrive.setPower(fltForward + -fltStrafe + -fltPivot);
-        backRightDrive.setPower(fltForward + fltStrafe + fltPivot);
+        frontLeftDrive.setPower(fltForward + fltStrafe + fltPivot);
+        frontRightDrive.setPower(fltForward + -fltStrafe + -fltPivot);
+        backLeftDrive.setPower(fltForward + -fltStrafe + fltPivot);
+        backRightDrive.setPower(fltForward + fltStrafe + -fltPivot);
+
 
 
         // Show the elapsed game time and wheel power.
