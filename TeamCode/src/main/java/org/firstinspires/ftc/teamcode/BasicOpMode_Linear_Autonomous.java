@@ -29,6 +29,7 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -51,8 +52,8 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Basic: Linear OpMode", group="Linear Opmode")
-@Disabled
+@Autonomous(name="Autonomous", group="Linear Opmode")
+//@Disabled
 public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
 
     // Declare OpMode members.
@@ -63,18 +64,21 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
     private DcMotor backRightDrive = null;
     private DcMotor carousel       = null;
 
+
     @Override
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+        String AllianceColor = "red";
+        int StartPosition = 1;
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        frontLeftDrive  = hardwareMap.get(DcMotor.class, "frontLeftDrive");
-        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightDrive");
-       backLeftDrive  = hardwareMap.get(DcMotor.class, "backLeftDrive");
-       backRightDrive = hardwareMap.get(DcMotor.class, "backRightDrive");
+        frontLeftDrive  = hardwareMap.get(DcMotor.class, "frontLeftMotor");
+        frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightMotor");
+       backLeftDrive  = hardwareMap.get(DcMotor.class, "backLeftMotor");
+       backRightDrive = hardwareMap.get(DcMotor.class, "backRightMotor");
        carousel = hardwareMap.get(DcMotor.class, "carousel");
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -84,6 +88,46 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
         carousel.setDirection(DcMotor.Direction.FORWARD);
+
+        // Input starting position and alliance color
+        while (!(gamepad1.y)) {
+            while (!(gamepad1.a || gamepad1.b)) {
+                telemetry.addData("To change color to blue press A : ", "To switch color to red press B");
+                if (gamepad1.a) {
+                    // Expect values of red or blue. LOWER CASE!
+                    AllianceColor = "blue";
+                } else if (gamepad1.b) {
+                    // Expect values of red or blue. LOWER CASE!
+                    AllianceColor = "red";
+                }
+                telemetry.update();
+            }
+            while (!(gamepad1.dpad_up || gamepad1.dpad_right || gamepad1.dpad_down || gamepad1.dpad_left)) {
+                telemetry.addData("To switch starting positions Use the D-Pad:", "Up is 1, right is 2, down is 3, left is 4");
+                if (gamepad1.dpad_up) {
+                    // Expect values of red or blue. LOWER CASE!
+                    StartPosition = 1;
+                } else if (gamepad1.dpad_right) {
+                    // Expect values of red or blue. LOWER CASE!
+                    StartPosition = 2;
+                } else if (gamepad1.dpad_down) {
+                    // Expect values of red or blue. LOWER CASE!
+                    StartPosition = 3;
+                } else if (gamepad1.dpad_left) {
+                    // Expect values of red or blue. LOWER CASE!
+                    StartPosition = 4;
+                }
+                telemetry.addData("Alliance Color:", AllianceColor);
+                telemetry.addData("Starting Position:", StartPosition);
+                telemetry.update();
+            }
+            telemetry.addData("Alliance Color:", AllianceColor);
+            telemetry.addData("Starting Position:", StartPosition);
+            telemetry.update();
+        }
+        telemetry.addData("Alliance Color:", AllianceColor);
+        telemetry.addData("Starting Position:", StartPosition);
+        telemetry.update();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
