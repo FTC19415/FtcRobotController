@@ -67,6 +67,10 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor backRightDrive = null;
     private DcMotor carousel       = null;
+    double frontLeftPower;
+    double frontRightPower;
+    double backLeftPower;
+    double backRightPower;
     ElapsedTime ElapsedTime2;
     private BNO055IMU imu;
 
@@ -143,10 +147,7 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
         while (opModeIsActive()) {
 
             // Setup a variable for each drive wheel to save power level for telemetry
-            double frontLeftPower;
-            double frontRightPower;
-            double backLeftPower;
-            double backRightPower;
+
             double carousel;
             ElapsedTime2 = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
@@ -193,10 +194,10 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
         // If time is present, time will be used
         // Gyro Code
         forwardEndTime = ElapsedTime2.milliseconds() + fwrdTime;
-        FLeftPower = fwrdSpeed;
-        FRightPower = fwrdSpeed;
-        BLeftPower = fwrdSpeed;
-        BRightPower = fwrdSpeed;
+        frontLeftPower  = fwrdSpeed;
+        frontRightPower = fwrdSpeed;
+        backLeftPower = fwrdSpeed;
+        backRightPower = fwrdSpeed;
         constCorrectionPercentage = 0.8;
         if (fwrdSpeed > 0) {
             while (!(ElapsedTime2.milliseconds() >= forwardEndTime || isStopRequested())) {
