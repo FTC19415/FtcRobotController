@@ -154,6 +154,7 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
 
 
 
+            /**
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
 
@@ -177,6 +178,9 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
             frontRightDrive.setPower(frontRightPower);
             frontLeftDrive.setPower(frontLeftPower);
             frontRightDrive.setPower(frontRightPower);
+            */
+
+            move_forward(0.5, 2000);
 
 
 
@@ -186,6 +190,9 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
             telemetry.update();
         }
     }
+
+    //Describe this function...
+
     private void move_forward(double fwrdSpeed, int fwrdTime) {
         double forwardEndTime;
         double constCorrectionPercentage;
