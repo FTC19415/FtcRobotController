@@ -37,6 +37,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.hardware.bosch.BNO055IMU;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
 
 /**
@@ -63,6 +67,8 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
     private DcMotor backLeftDrive = null;
     private DcMotor backRightDrive = null;
     private DcMotor carousel       = null;
+    ElapsedTime ElapsedTime2;
+    private BNO055IMU imu;
 
 
     @Override
@@ -142,6 +148,8 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
             double backLeftPower;
             double backRightPower;
             double carousel;
+            ElapsedTime2 = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
 
 
             // Choose to drive using either Tank Mode, or POV Mode
@@ -176,4 +184,101 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
             telemetry.update();
         }
     }
+    private void move_forward(double fwrdSpeed, int fwrdTime) {
+        double forwardEndTime;
+        double constCorrectionPercentage;
+        float YawAngle;
+
+        // This function is to move the robot forward or backward
+        // If time is present, time will be used
+        // Gyro Code
+        forwardEndTime = ElapsedTime2.milliseconds() + fwrdTime;
+        FLeftPower = fwrdSpeed;
+        FRightPower = fwrdSpeed;
+        BLeftPower = fwrdSpeed;
+        BRightPower = fwrdSpeed;
+        constCorrectionPercentage = 0.8;
+        if (fwrdSpeed > 0) {
+            while (!(ElapsedTime2.milliseconds() >= forwardEndTime || isStopRequested())) {
+                YawAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES).thirdAngle;
+                telemetry.addData("Speed is", fwrdSpeed);
+                telemetry.addData("Time", ElapsedTime2.milliseconds());
+                telemetry.addData("Yaw angle", YawAngle);
+                if (YawAngle > -2) {
+                    // Turn Left
+                    FLeftPower = fwrdSpeed * constCorrectionPercentage;
+                    FRightPower = fwrdSpeed * constCorrectionPercentage;
+                    BLeftPower = fwrdSpeed;
+                    BRightPower = fwrdSpeed;
+                    telemetry.addData("correcting", "left");
+                } else if (YawAngle < 2) {
+                    // Turn Right
+                    FLeftPower = fwrdSpeed;
+                    FRightPower = fwrdSpeed;
+                    BLeftPower = fwrdSpeed * constCorrectionPercentage;
+                    BRightPower = fwrdSpeed * constCorrectionPercentage;
+                    telemetry.addData("correcting", "right");
+                } else {
+                    // Continue Straight
+                    FLeftPower = fwrdSpeed;
+                    FRightPower = fwrdSpeed;
+                    BLeftPower = fwrdSpeed;
+                    BRightPower = fwrdSpeed;
+                    telemetry.addData("correcting", "straight");
+                }
+                telemetry.addData("Left Motor Power", FLeftPower);
+                telemetry.addData("Right Motor Power", FRightPower);
+                DriveFrontLeft.setPower(FLeftPower);
+                DriveFrontRight.setPower(FRightPower);
+                DriveBackLeft.setPower(BLeftPower);
+                DriveBackRight.setPower(BRightPower);
+                telemetry.update();
+            }
+            DriveFrontLeft.setPower(0);
+            DriveFrontRight.setPower(0);
+            DriveBackLeft.setPower(0);
+            DriveBackRight.setPower(0);
+        } else if (fwrdSpeed < 0) {
+            while (!(ElapsedTime2.milliseconds() >= forwardEndTime || isStopRequested())) {
+                YawAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES).thirdAngle;
+                telemetry.addData("Speed is", fwrdSpeed);
+                telemetry.addData("Time", ElapsedTime2.milliseconds());
+                telemetry.addData("Yaw angle", YawAngle);
+                if (YawAngle > -2) {
+                    // Turn Left
+                    FLeftPower = fwrdSpeed * constCorrectionPercentage;
+                    FRightPower = fwrdSpeed * constCorrectionPercentage;
+                    BLeftPower = fwrdSpeed;
+                    BRightPower = fwrdSpeed;
+                    telemetry.addData("correcting", "left");
+                } else if (YawAngle < 2) {
+                    // Turn Right
+                    FLeftPower = fwrdSpeed;
+                    FRightPower = fwrdSpeed;
+                    BLeftPower = fwrdSpeed * constCorrectionPercentage;
+                    BRightPower = fwrdSpeed * constCorrectionPercentage;
+                    telemetry.addData("correcting", "right");
+                } else {
+                    // Continue Straight
+                    FLeftPower = fwrdSpeed;
+                    FRightPower = fwrdSpeed;
+                    BLeftPower = fwrdSpeed;
+                    BRightPower = fwrdSpeed;
+                    telemetry.addData("correcting", "straight");
+                }
+                telemetry.addData("Left Motor Power", FLeftPower);
+                telemetry.addData("Right Motor Power", FRightPower);
+                DriveFrontLeft.setPower(FLeftPower);
+                DriveFrontRight.setPower(FRightPower);
+                DriveBackLeft.setPower(BLeftPower);
+                DriveBackRight.setPower(BRightPower);
+                telemetry.update();
+            }
+            DriveFrontLeft.setPower(0);
+            DriveFrontRight.setPower(0);
+            DriveBackLeft.setPower(0);
+            DriveBackRight.setPower(0);
+        }
+    }
+
 }
