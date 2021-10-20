@@ -31,6 +31,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -59,6 +60,8 @@ public class BasicOpMode_Iterative_Drive extends OpMode
     private DcMotor backLeftDrive = null;
     private DcMotor backRightDrive = null;
     private DcMotor carousel = null;
+    private DcMotor arm = null;
+    private Servo claw = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -108,7 +111,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
      */
     @Override
     public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
+        // Setup a variable for each motor to save power level for telemetry
         double frontLeftPower;
         double frontRightPower;
         double backLeftPower;
@@ -117,10 +120,11 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         double fltForward;
         double fltStrafe;
         double fltPivot;
+        double claw;
+        double arm;
 
 
 
-        // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
 
         // POV Mode uses left stick to go forward, and right stick to turn.
@@ -150,10 +154,6 @@ public class BasicOpMode_Iterative_Drive extends OpMode
             carousel.setPower(0);
         }
 
-        // Tank Mode uses one stick to control each wheel.
-        // - This requires no math, but it is hard to drive forward slowly and keep straight.
-        // leftPower  = -gamepad1.left_stick_y ;
-        // rightPower = -gamepad1.right_stick_y ;
 
         // Send calculated power to wheels
         frontLeftDrive.setPower(fltForward + fltStrafe + fltPivot);
