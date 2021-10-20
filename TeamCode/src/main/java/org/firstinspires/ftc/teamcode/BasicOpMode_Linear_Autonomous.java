@@ -38,6 +38,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -207,38 +208,38 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
                 telemetry.addData("Yaw angle", YawAngle);
                 if (YawAngle > -2) {
                     // Turn Left
-                    FLeftPower = fwrdSpeed * constCorrectionPercentage;
-                    FRightPower = fwrdSpeed * constCorrectionPercentage;
-                    BLeftPower = fwrdSpeed;
-                    BRightPower = fwrdSpeed;
+                    frontLeftPower = fwrdSpeed * constCorrectionPercentage;
+                    frontRightPower = fwrdSpeed * constCorrectionPercentage;
+                    backLeftPower = fwrdSpeed;
+                    backRightPower = fwrdSpeed;
                     telemetry.addData("correcting", "left");
                 } else if (YawAngle < 2) {
                     // Turn Right
-                    FLeftPower = fwrdSpeed;
-                    FRightPower = fwrdSpeed;
-                    BLeftPower = fwrdSpeed * constCorrectionPercentage;
-                    BRightPower = fwrdSpeed * constCorrectionPercentage;
+                    frontLeftPower = fwrdSpeed;
+                    frontRightPower = fwrdSpeed;
+                    backLeftPower = fwrdSpeed * constCorrectionPercentage;
+                    backRightPower = fwrdSpeed * constCorrectionPercentage;
                     telemetry.addData("correcting", "right");
                 } else {
                     // Continue Straight
-                    FLeftPower = fwrdSpeed;
-                    FRightPower = fwrdSpeed;
-                    BLeftPower = fwrdSpeed;
-                    BRightPower = fwrdSpeed;
+                    frontLeftPower = fwrdSpeed;
+                    frontRightPower = fwrdSpeed;
+                    backLeftPower = fwrdSpeed;
+                    backRightPower = fwrdSpeed;
                     telemetry.addData("correcting", "straight");
                 }
-                telemetry.addData("Left Motor Power", FLeftPower);
-                telemetry.addData("Right Motor Power", FRightPower);
-                DriveFrontLeft.setPower(FLeftPower);
-                DriveFrontRight.setPower(FRightPower);
-                DriveBackLeft.setPower(BLeftPower);
-                DriveBackRight.setPower(BRightPower);
+                telemetry.addData("Left Motor Power", frontLeftPower);
+                telemetry.addData("Right Motor Power", frontRightPower);
+                frontLeftDrive.setPower(frontLeftPower);
+                frontRightDrive.setPower(frontRightPower);
+                backLeftDrive.setPower(backLeftPower);
+                backRightDrive.setPower(backRightPower);
                 telemetry.update();
             }
-            DriveFrontLeft.setPower(0);
-            DriveFrontRight.setPower(0);
-            DriveBackLeft.setPower(0);
-            DriveBackRight.setPower(0);
+            frontLeftDrive.setPower(0);
+            frontRightDrive.setPower(0);
+            backLeftDrive.setPower(0);
+            backRightDrive.setPower(0);
         } else if (fwrdSpeed < 0) {
             while (!(ElapsedTime2.milliseconds() >= forwardEndTime || isStopRequested())) {
                 YawAngle = imu.getAngularOrientation(AxesReference.EXTRINSIC, AxesOrder.XYX, AngleUnit.DEGREES).thirdAngle;
@@ -247,38 +248,38 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
                 telemetry.addData("Yaw angle", YawAngle);
                 if (YawAngle > -2) {
                     // Turn Left
-                    FLeftPower = fwrdSpeed * constCorrectionPercentage;
-                    FRightPower = fwrdSpeed * constCorrectionPercentage;
-                    BLeftPower = fwrdSpeed;
-                    BRightPower = fwrdSpeed;
+                    frontLeftPower = fwrdSpeed * constCorrectionPercentage;
+                    frontRightPower = fwrdSpeed * constCorrectionPercentage;
+                    backLeftPower = fwrdSpeed;
+                    backRightPower = fwrdSpeed;
                     telemetry.addData("correcting", "left");
                 } else if (YawAngle < 2) {
                     // Turn Right
-                    FLeftPower = fwrdSpeed;
-                    FRightPower = fwrdSpeed;
-                    BLeftPower = fwrdSpeed * constCorrectionPercentage;
-                    BRightPower = fwrdSpeed * constCorrectionPercentage;
+                    frontLeftPower = fwrdSpeed;
+                    frontRightPower = fwrdSpeed;
+                    backLeftPower = fwrdSpeed * constCorrectionPercentage;
+                    backRightPower = fwrdSpeed * constCorrectionPercentage;
                     telemetry.addData("correcting", "right");
                 } else {
                     // Continue Straight
-                    FLeftPower = fwrdSpeed;
-                    FRightPower = fwrdSpeed;
-                    BLeftPower = fwrdSpeed;
-                    BRightPower = fwrdSpeed;
+                    frontLeftPower = fwrdSpeed;
+                    frontRightPower = fwrdSpeed;
+                    backLeftPower = fwrdSpeed;
+                    backRightPower = fwrdSpeed;
                     telemetry.addData("correcting", "straight");
                 }
-                telemetry.addData("Left Motor Power", FLeftPower);
-                telemetry.addData("Right Motor Power", FRightPower);
-                DriveFrontLeft.setPower(FLeftPower);
-                DriveFrontRight.setPower(FRightPower);
-                DriveBackLeft.setPower(BLeftPower);
-                DriveBackRight.setPower(BRightPower);
+                telemetry.addData("Left Motor Power", frontLeftPower);
+                telemetry.addData("Right Motor Power", frontRightPower);
+                frontLeftDrive.setPower(frontLeftPower);
+                frontRightDrive.setPower(frontRightPower);
+                backLeftDrive.setPower(backLeftPower);
+                backRightDrive.setPower(backRightPower);
                 telemetry.update();
             }
-            DriveFrontLeft.setPower(0);
-            DriveFrontRight.setPower(0);
-            DriveBackLeft.setPower(0);
-            DriveBackRight.setPower(0);
+            frontLeftDrive.setPower(0);
+            frontRightDrive.setPower(0);
+            backLeftDrive.setPower(0);
+            backRightDrive.setPower(0);
         }
     }
 
