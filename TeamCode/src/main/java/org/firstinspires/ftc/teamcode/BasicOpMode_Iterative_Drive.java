@@ -60,8 +60,9 @@ public class BasicOpMode_Iterative_Drive extends OpMode
     private DcMotor backLeftDrive = null;
     private DcMotor backRightDrive = null;
     private DcMotor carousel = null;
-    private DcMotor arm = null;
-    private Servo claw = null;
+    private DcMotor armObj = null;
+    private DcMotor linearArm = null;
+    private Servo clawObj = null;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -78,6 +79,10 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         backLeftDrive  = hardwareMap.get(DcMotor.class, "backLeftMotor");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightMotor");
         carousel = hardwareMap.get(DcMotor.class, "carousel");
+        armObj = hardwareMap.get(DcMotor.class, "Arm");
+        armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        armObj.setTargetPosition(0);
+        armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -122,6 +127,22 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         double fltPivot;
         double claw;
         double arm;
+        double linearArm;
+        int intArmPosition;
+        int intArmPositionUp;
+        int intArmPositionDown;
+        double YTimer;
+        double YTimerTwo;
+        ElapsedTime ElapsedTime2;
+        int ghostingTime;
+        double fltNormalFactor;
+
+
+
+        intArmPosition = 0;
+        intArmPositionUp = 1000;
+        intArmPositionDown = 2000;
+
 
 
 
@@ -131,6 +152,11 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         // - This uses basic math to combine motions and is easier to drive straight.
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
+        YTimer = 0;
+        YTimerTwo = 0;
+        ElapsedTime2 = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        ghostingTime = 200;
+        fltNormalFactor = 0.33;
 
         fltForward = -gamepad1.left_stick_y;
         fltStrafe = gamepad1.left_stick_x;
@@ -152,6 +178,31 @@ public class BasicOpMode_Iterative_Drive extends OpMode
             carousel.setPower(0.5);
         } else {
             carousel.setPower(0);
+        }
+        if (gamepad2.y) {
+            if (ElapsedTime2.milliseconds() > YTimer) {
+                if (armObj.getTargetPosition() == intArmPositionUp) {
+                    armObj.setTargetPosition(intArmPositionDown);
+                    armObj.setPower(0.5);
+                } else {
+                    armObj.setTargetPosition(intArmPositionUp);
+                    armObj.setPower(0.5);
+                }
+            }
+            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+        }
+        if (gamepad2.x) {
+            armObj.setTargetPosition(0);
+            armObj.setPower(-.2);
+            armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            intArmPosition = 0;
+        }
+        if (gamepad2.right_trigger > fltNormalFactor) {
+            clawObj.setPosition(0.6);
+        } else {
+            clawObj.setPosition(0.2);
         }
 
 

@@ -29,18 +29,19 @@
 
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+//import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+//import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
+//import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+//import com.qualcomm.robotcore.util.Range;
 
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 
@@ -68,8 +69,9 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
     private DcMotor frontRightDrive = null;
     private DcMotor backLeftDrive = null;
     private DcMotor backRightDrive = null;
-    private DcMotor carousel       = null;
+    private DcMotor carousel = null;
     private DcMotor arm = null;
+    private DcMotor linearArm = null;
     private Servo claw = null;
     double frontLeftPower;
     double frontRightPower;
@@ -85,23 +87,35 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
         telemetry.update();
         String AllianceColor = "red";
         int StartPosition = 1;
+        BNO055IMU.Parameters IMU_Parameters;
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        frontLeftDrive  = hardwareMap.get(DcMotor.class, "frontLeftMotor");
+        frontLeftDrive = hardwareMap.get(DcMotor.class, "frontLeftMotor");
         frontRightDrive = hardwareMap.get(DcMotor.class, "frontRightMotor");
-       backLeftDrive  = hardwareMap.get(DcMotor.class, "backLeftMotor");
-       backRightDrive = hardwareMap.get(DcMotor.class, "backRightMotor");
-       carousel = hardwareMap.get(DcMotor.class, "carousel");
+        backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftMotor");
+        backRightDrive = hardwareMap.get(DcMotor.class, "backRightMotor");
+        carousel = hardwareMap.get(DcMotor.class, "carousel");
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
+        //frontLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //frontRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+       // backLeftDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+       // backRightDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         frontRightDrive.setDirection(DcMotor.Direction.FORWARD);
         backLeftDrive.setDirection(DcMotor.Direction.REVERSE);
         backRightDrive.setDirection(DcMotor.Direction.FORWARD);
         carousel.setDirection(DcMotor.Direction.FORWARD);
+
+        //arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        arm.setTargetPosition(0);
+       //arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
         // Input starting position and alliance color
         while (!(gamepad1.y)) {
@@ -143,58 +157,66 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
         telemetry.addData("Starting Position:", StartPosition);
         telemetry.update();
 
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
-
-        // run until the end of the match (driver presses STOP)
-        while (opModeIsActive()) {
-
-            // Setup a variable for each drive wheel to save power level for telemetry
-
-            double carousel;
-            ElapsedTime2 = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-
-
-
-            /**
-            // Choose to drive using either Tank Mode, or POV Mode
-            // Comment out the method that's not used.  The default below is POV.
-
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
-            double drive = -gamepad1.left_stick_y;
-            double turn  =  gamepad1.right_stick_x;
-            frontLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            frontRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-            backLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            backRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-            carousel  = Range.clip(drive - turn, -1.0, 1.0) ;
-
-            // Tank Mode uses one stick to control each wheel.
-            // - This requires no math, but it is hard to drive forward slowly and keep straight.
-            // leftPower  = -gamepad1.left_stick_y ;
-            // rightPower = -gamepad1.right_stick_y ;
-
-            // Send calculated power to wheels
-            frontLeftDrive.setPower(frontLeftPower);
-            frontRightDrive.setPower(frontRightPower);
-            frontLeftDrive.setPower(frontLeftPower);
-            frontRightDrive.setPower(frontRightPower);
-            */
-
-            move_forward(0.5, 2000);
-
-
-
-            // Show the elapsed game time and wheel power.
-            telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontLeftPower, frontRightPower, backLeftPower, backRightPower);
+        IMU_Parameters = new BNO055IMU.Parameters();
+        IMU_Parameters.mode = BNO055IMU.SensorMode.IMU;
+        imu.initialize(IMU_Parameters);
+        telemetry.addData("Status", "IMU initialized, calibration started");
+        telemetry.update();
+        sleep(1000);
+        while (!IMU_Calibrated()) {
+            telemetry.addData("If Calibration", "doesn't complete after 3 seconds, move through 9");
             telemetry.update();
+            sleep(1000);
+
+            // Wait for the game to start (driver presses PLAY)
+            waitForStart();
+            runtime.reset();
+
+            // run until the end of the match (driver presses STOP)
+            while (opModeIsActive()) {
+
+                // Setup a variable for each drive wheel to save power level for telemetry
+
+                ElapsedTime2 = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+
+
+                // Choose to drive using either Tank Mode, or POV Mode
+                // Comment out the method that's not used.  The default below is POV.
+
+                // POV Mode uses left stick to go forward, and right stick to turn.
+                // - This uses basic math to combine motions and is easier to drive straight.
+                //double drive = -gamepad1.left_stick_y;
+                //double turn  =  gamepad1.right_stick_x;
+                //frontLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
+                //frontRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+                //backLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
+                //backRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+                //carousel  = Range.clip(drive - turn, -1.0, 1.0) ;
+
+                // Tank Mode uses one stick to control each wheel.
+                // - This requires no math, but it is hard to drive forward slowly and keep straight.
+                // leftPower  = -gamepad1.left_stick_y ;
+                // rightPower = -gamepad1.right_stick_y ;
+
+                // Send calculated power to wheels
+                //frontLeftDrive.setPower(frontLeftPower);
+                //frontRightDrive.setPower(frontRightPower);
+                //frontLeftDrive.setPower(frontLeftPower);
+                //frontRightDrive.setPower(frontRightPower);
+
+
+                move_forward(0.5, 500);
+
+
+                // Show the elapsed game time and wheel power.
+                telemetry.addData("Status", "Run Time: " + runtime.toString());
+                telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontLeftPower, frontRightPower, backLeftPower, backRightPower);
+                telemetry.update();
+            }
         }
+
     }
 
-    //Describe this function...
 
     private void move_forward(double fwrdSpeed, int fwrdTime) {
         double forwardEndTime;
@@ -205,7 +227,7 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
         // If time is present, time will be used
         // Gyro Code
         forwardEndTime = ElapsedTime2.milliseconds() + fwrdTime;
-        frontLeftPower  = fwrdSpeed;
+        frontLeftPower = fwrdSpeed;
         frontRightPower = fwrdSpeed;
         backLeftPower = fwrdSpeed;
         backRightPower = fwrdSpeed;
@@ -293,4 +315,12 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
         }
     }
 
+    //Describe this function...
+
+    private boolean IMU_Calibrated() {
+        telemetry.addData("IMU Calibration Status", imu.getCalibrationStatus());
+        telemetry.addData("Gyro Calibrated", imu.isGyroCalibrated() ? "True" : "False");
+        telemetry.addData("System Satus", imu.getSystemStatus());
+        return imu.isGyroCalibrated();
+    }
 }
