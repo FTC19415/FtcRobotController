@@ -80,6 +80,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightMotor");
         carousel = hardwareMap.get(DcMotor.class, "carousel");
         armObj = hardwareMap.get(DcMotor.class, "Arm");
+        clawObj = hardwareMap.get(Servo.class, "Claw");
         armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armObj.setTargetPosition(0);
         armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -129,8 +130,10 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         double arm;
         double linearArm;
         int intArmPosition;
-        int intArmPositionUp;
-        int intArmPositionDown;
+        int intArmPositionPick;
+        int intArmPositionDropMid;
+        int intArmPositionDropUp;
+        int intArmPositionDrive;
         double YTimer;
         double YTimerTwo;
         ElapsedTime ElapsedTime2;
@@ -140,8 +143,10 @@ public class BasicOpMode_Iterative_Drive extends OpMode
 
 
         intArmPosition = 0;
-        intArmPositionUp = 1000;
-        intArmPositionDown = 2000;
+        intArmPositionPick = 5500;
+        intArmPositionDropMid = 4200;
+        intArmPositionDrive = 2000;
+        intArmPositionDropUp = 3200;
 
 
 
@@ -163,10 +168,10 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         fltPivot = gamepad1.right_stick_x;
 
 
-        frontLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-        frontRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-        backLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-        backRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+        frontLeftPower    = Range.clip(drive + turn, -0.3, 0.3) ;
+        frontRightPower   = Range.clip(drive - turn, -0.3, 0.3) ;
+        backLeftPower    = Range.clip(drive + turn, -0.3, 0.3) ;
+        backRightPower   = Range.clip(drive - turn, -0.3, 0.3) ;
 
         if (gamepad1.left_bumper) {
             carousel.setPower(-0.7);
@@ -181,30 +186,66 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         }
         if (gamepad2.y) {
             if (ElapsedTime2.milliseconds() > YTimer) {
-                if (armObj.getTargetPosition() == intArmPositionUp) {
-                    armObj.setTargetPosition(intArmPositionDown);
-                    armObj.setPower(0.5);
+                if (armObj.getTargetPosition() == intArmPositionDropUp) {
+                    armObj.setTargetPosition(intArmPositionDropMid);
+                    armObj.setPower(1);
                 } else {
-                    armObj.setTargetPosition(intArmPositionUp);
-                    armObj.setPower(0.5);
+                    armObj.setTargetPosition(intArmPositionDropUp);
+                    armObj.setPower(1);
                 }
             }
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }
         if (gamepad2.x) {
-            armObj.setTargetPosition(0);
+            if (ElapsedTime2.milliseconds() > YTimer) {
+                    armObj.setTargetPosition(intArmPositionDrive);
+                    armObj.setPower(1);
+                }
+
+            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+        }
+        if (gamepad2.b) {
+            if (ElapsedTime2.milliseconds() > YTimer) {
+                armObj.setTargetPosition(intArmPositionPick);
+                armObj.setPower(1);
+            }
+
+            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+        }
+        if (gamepad2.a) {
+            if (ElapsedTime2.milliseconds() > YTimer) {
+                armObj.setTargetPosition(intArmPosition);
+                armObj.setPower(-1);
+            }
+
+            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+        }
+        /*
+        if (gamepad2.x) {
+            armObj.getTargetPosition(0);
             armObj.setPower(-.2);
             armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             intArmPosition = 0;
         }
-        if (gamepad2.right_trigger > fltNormalFactor) {
+        */
+
+        if (gamepad2.right_bumper) {
             clawObj.setPosition(0.6);
         } else {
             clawObj.setPosition(0.2);
         }
 
+        if (gamepad1.right_trigger > fltNormalFactor) {
+            fltForward = gamepad1.right_trigger * -gamepad1.left_stick_y;
+            fltStrafe = gamepad1.right_trigger * gamepad1.left_stick_x;
+            fltPivot = gamepad1.right_trigger * gamepad1.right_stick_x;
+        } else {
+            fltForward = fltNormalFactor * -gamepad1.left_stick_y;
+            fltStrafe = fltNormalFactor * gamepad1.left_stick_x;
+            fltPivot = fltNormalFactor * gamepad1.right_stick_x;
+        }
 
         // Send calculated power to wheels
         frontLeftDrive.setPower(fltForward + fltStrafe + fltPivot);
