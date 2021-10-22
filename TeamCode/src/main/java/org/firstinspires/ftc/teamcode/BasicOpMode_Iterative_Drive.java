@@ -61,7 +61,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
     private DcMotor backRightDrive = null;
     private DcMotor carousel = null;
     private DcMotor armObj = null;
-    private DcMotor linearArm = null;
+    private DcMotor LinearArmObj = null;
     private Servo clawObj = null;
 
     /*
@@ -81,6 +81,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         carousel = hardwareMap.get(DcMotor.class, "carousel");
         armObj = hardwareMap.get(DcMotor.class, "Arm");
         clawObj = hardwareMap.get(Servo.class, "Claw");
+        LinearArmObj = hardwareMap.get(DcMotor.class, "LinearArm");
         armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armObj.setTargetPosition(0);
         armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -128,7 +129,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         double fltPivot;
         double claw;
         double arm;
-        double linearArm;
+        double LinearArm;
         int intArmPosition;
         int intArmPositionPick;
         int intArmPositionDropMid;
@@ -143,7 +144,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
 
 
         intArmPosition = 0;
-        intArmPositionPick = 5500;
+        intArmPositionPick = 5200;
         intArmPositionDropMid = 4200;
         intArmPositionDrive = 2000;
         intArmPositionDropUp = 3200;
@@ -184,7 +185,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         } else {
             carousel.setPower(0);
         }
-        if (gamepad2.y) {
+        if (gamepad2.b) {
             if (ElapsedTime2.milliseconds() > YTimer) {
                 if (armObj.getTargetPosition() == intArmPositionDropUp) {
                     armObj.setTargetPosition(intArmPositionDropMid);
@@ -196,7 +197,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
             }
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }
-        if (gamepad2.x) {
+        if (gamepad2.y) {
             if (ElapsedTime2.milliseconds() > YTimer) {
                     armObj.setTargetPosition(intArmPositionDrive);
                     armObj.setPower(1);
@@ -204,7 +205,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
 
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }
-        if (gamepad2.b) {
+        if (gamepad2.a) {
             if (ElapsedTime2.milliseconds() > YTimer) {
                 armObj.setTargetPosition(intArmPositionPick);
                 armObj.setPower(1);
@@ -212,7 +213,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
 
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }
-        if (gamepad2.a) {
+        if (gamepad2.x) {
             if (ElapsedTime2.milliseconds() > YTimer) {
                 armObj.setTargetPosition(intArmPosition);
                 armObj.setPower(-1);
@@ -235,6 +236,18 @@ public class BasicOpMode_Iterative_Drive extends OpMode
             clawObj.setPosition(0.6);
         } else {
             clawObj.setPosition(0.2);
+        }
+
+        if (gamepad2.dpad_up) {
+            LinearArmObj.setPower(1);
+        } else {
+            LinearArmObj.setPower(0);
+        }
+
+        if (gamepad2.dpad_down) {
+            LinearArmObj.setPower(-1);
+        } else {
+            LinearArmObj.setPower(0);
         }
 
         if (gamepad1.right_trigger > fltNormalFactor) {

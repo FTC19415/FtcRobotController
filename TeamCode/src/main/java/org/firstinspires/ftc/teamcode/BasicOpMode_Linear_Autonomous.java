@@ -205,7 +205,17 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
                 //frontRightDrive.setPower(frontRightPower);
 
 
-                move_forward(0.5, 500);
+                frontLeftDrive.setPower(1);
+                frontRightDrive.setPower(1);
+                backLeftDrive.setPower(1);
+                backRightDrive.setPower(1);
+
+                sleep(3000);
+
+                frontLeftDrive.setPower(0);
+                frontRightDrive.setPower(0);
+                backLeftDrive.setPower(0);
+                backRightDrive.setPower(0);
 
 
                 // Show the elapsed game time and wheel power.
