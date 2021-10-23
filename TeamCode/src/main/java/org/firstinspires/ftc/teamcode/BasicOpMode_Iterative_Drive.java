@@ -27,13 +27,13 @@ package org.firstinspires.ftc.teamcode;/* Copyright (c) 2017 FIRST. All rights r
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -63,6 +63,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
     private DcMotor armObj = null;
     private DcMotor LinearArmObj = null;
     private Servo clawObj = null;
+    private TouchSensor ArmStop;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -82,6 +83,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         armObj = hardwareMap.get(DcMotor.class, "Arm");
         clawObj = hardwareMap.get(Servo.class, "Claw");
         LinearArmObj = hardwareMap.get(DcMotor.class, "LinearArm");
+        ArmStop = hardwareMap.get(TouchSensor.class, "ArmStop");
         armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armObj.setTargetPosition(0);
         armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -162,7 +164,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         YTimerTwo = 0;
         ElapsedTime2 = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         ghostingTime = 200;
-        fltNormalFactor = 0.33;
+        fltNormalFactor = 0.4;
 
         fltForward = -gamepad1.left_stick_y;
         fltStrafe = gamepad1.left_stick_x;
@@ -221,16 +223,15 @@ public class BasicOpMode_Iterative_Drive extends OpMode
 
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }
-        /*
-        if (gamepad2.x) {
-            armObj.getTargetPosition(0);
-            armObj.setPower(-.2);
-            armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        /*if (gamepad2.x) {
+            while (!ArmStop.isPressed()) {
+                armObj.setPower(-0.3);
+            }
+            armObj.setPower(0);
             intArmPosition = 0;
-        }
-        */
+        }*/
+
 
         if (gamepad2.right_bumper) {
             clawObj.setPosition(0.6);

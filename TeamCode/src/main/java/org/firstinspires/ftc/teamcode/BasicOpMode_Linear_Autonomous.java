@@ -205,17 +205,7 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
                 //frontRightDrive.setPower(frontRightPower);
 
 
-                frontLeftDrive.setPower(1);
-                frontRightDrive.setPower(1);
-                backLeftDrive.setPower(1);
-                backRightDrive.setPower(1);
-
-                sleep(3000);
-
-                frontLeftDrive.setPower(0);
-                frontRightDrive.setPower(0);
-                backLeftDrive.setPower(0);
-                backRightDrive.setPower(0);
+                move_forward(0.7, 3000);
 
 
                 // Show the elapsed game time and wheel power.
@@ -227,8 +217,30 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
 
     }
 
-
     private void move_forward(double fwrdSpeed, int fwrdTime) {
+        //double forwardEndTime;
+
+        frontLeftPower = fwrdSpeed;
+        frontRightPower = fwrdSpeed;
+        backLeftPower = fwrdSpeed;
+        backRightPower = fwrdSpeed;
+
+        frontLeftDrive.setPower(frontLeftPower);
+        frontRightDrive.setPower(frontRightPower);
+        backLeftDrive.setPower(backLeftPower);
+        backRightDrive.setPower(backRightPower);
+
+        sleep(fwrdTime);
+
+        frontLeftDrive.setPower(0);
+        frontRightDrive.setPower(0);
+        backLeftDrive.setPower(0);
+        backRightDrive.setPower(0);
+
+    }
+
+
+    /*private void move_forward(double fwrdSpeed, int fwrdTime) {
         double forwardEndTime;
         double constCorrectionPercentage;
         float YawAngle;
@@ -324,7 +336,7 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
             backRightDrive.setPower(0);
         }
     }
-
+*/
     //Describe this function...
 
     private boolean IMU_Calibrated() {
@@ -334,3 +346,4 @@ public class BasicOpMode_Linear_Autonomous extends LinearOpMode {
         return imu.isGyroCalibrated();
     }
 }
+
