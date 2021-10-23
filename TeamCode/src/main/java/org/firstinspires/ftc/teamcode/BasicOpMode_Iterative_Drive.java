@@ -146,7 +146,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
 
 
         intArmPosition = 0;
-        intArmPositionPick = 5200;
+        intArmPositionPick = 5300;
         intArmPositionDropMid = 4200;
         intArmPositionDrive = 2000;
         intArmPositionDropUp = 3200;
