@@ -69,6 +69,7 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
     double frontRightPower;
     double backLeftPower;
     double backRightPower;
+    double carouselPower;
     ElapsedTime ElapsedTime2;
     //private BNO055IMU imu;
 
@@ -77,8 +78,8 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        String AllianceColor = "red";
-        int StartPosition = 1;
+        String AllianceColor = null;
+        int StartPosition = 0;
        // BNO055IMU.Parameters IMU_Parameters;
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -90,6 +91,11 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightMotor");
         carousel = hardwareMap.get(DcMotor.class, "carousel");
        // imu = hardwareMap.get(BNO055IMU.class, "imu");
+
+        //initialize the camera
+
+        //run the camera to see where the duck is and set the variable
+
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -109,10 +115,11 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
        //arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
 
-        // Input starting position and alliance color
+        // Input starting position and alliance color by usuing the controllers
         while (!(gamepad1.y)) {
             while (!(gamepad1.a || gamepad1.b)) {
                 telemetry.addData("To change color to blue press A : ", "To switch color to red press B");
+                //if A is pressed the color changes to blue, if B pressed the color red
                 if (gamepad1.a) {
                     // Expect values of red or blue. LOWER CASE!
                     AllianceColor = "blue";
@@ -125,16 +132,16 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
             while (!(gamepad1.dpad_up || gamepad1.dpad_right || gamepad1.dpad_down || gamepad1.dpad_left)) {
                 telemetry.addData("To switch starting positions Use the D-Pad:", "Up is 1, right is 2, down is 3, left is 4");
                 if (gamepad1.dpad_up) {
-                    // Expect values of red or blue. LOWER CASE!
+                    // red side closest to the warehouse
                     StartPosition = 1;
                 } else if (gamepad1.dpad_right) {
-                    // Expect values of red or blue. LOWER CASE!
+                    // red side closest to the carousel
                     StartPosition = 2;
                 } else if (gamepad1.dpad_down) {
-                    // Expect values of red or blue. LOWER CASE!
+                    // blue side closest to the warehouse
                     StartPosition = 3;
                 } else if (gamepad1.dpad_left) {
-                    // Expect values of red or blue. LOWER CASE!
+                    // blue side closest to the carousel
                     StartPosition = 4;
                 }
                 telemetry.addData("Alliance Color:", AllianceColor);
@@ -149,6 +156,7 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
         telemetry.addData("Starting Position:", StartPosition);
         telemetry.update();
 
+        //initializing parameters
         /*IMU_Parameters = new BNO055IMU.Parameters();
         IMU_Parameters.mode = BNO055IMU.SensorMode.IMU;
         imu.initialize(IMU_Parameters);
@@ -164,55 +172,111 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
             waitForStart();
             runtime.reset();
 
-            // run until the end of the match (driver presses STOP)
-            while (opModeIsActive()) {
 
-                // Setup a variable for each drive wheel to save power level for telemetry
-
+                //setting a timer to reference later
                 ElapsedTime2 = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
 
-                // Choose to drive using either Tank Mode, or POV Mode
-                // Comment out the method that's not used.  The default below is POV.
-
-                // POV Mode uses left stick to go forward, and right stick to turn.
-                // - This uses basic math to combine motions and is easier to drive straight.
-                //double drive = -gamepad1.left_stick_y;
-                //double turn  =  gamepad1.right_stick_x;
-                //frontLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-                //frontRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-                //backLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-                //backRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
-                //carousel  = Range.clip(drive - turn, -1.0, 1.0) ;
-
-                // Tank Mode uses one stick to control each wheel.
-                // - This requires no math, but it is hard to drive forward slowly and keep straight.
-                // leftPower  = -gamepad1.left_stick_y ;
-                // rightPower = -gamepad1.right_stick_y ;
-
-                // Send calculated power to wheels
-                //frontLeftDrive.setPower(frontLeftPower);
-                //frontRightDrive.setPower(frontRightPower);
-                //frontLeftDrive.setPower(frontLeftPower);
-                //frontRightDrive.setPower(frontRightPower);
-
                 if (AllianceColor == "red") {
                     if (StartPosition == 1) {
-                        //Warehouse Code
-                        move_forward(0.7, 1);
+                        //Warehouse Code that drives into the warehouse
+                        move_forward(0.7, 1000);
 
                     } else if (StartPosition == 2) {
-                        // Courosel code
-                        move_forward(-0.7, 1000);
+                        // Carousel code that drives to the carousel and goes into the red box
+                        move_forward(-0.4, 1000);
+
+                        //Putting motor on carousel
+                        frontLeftDrive.setPower(-.2);
+                        frontRightDrive.setPower(.2);
+                        backLeftDrive.setPower(-0.2);
+                        backRightDrive.setPower(-.2);
+
+                        sleep(1500);
+
+                        frontLeftDrive.setPower(0);
+                        frontRightDrive.setPower(0);
+                        backLeftDrive.setPower(0);
+                        backRightDrive.setPower(0);
+
+                        run_carousel(-.3, 6000);
+
+                        //turning to wall
+                        frontLeftDrive.setPower(-.5);
+                        frontRightDrive.setPower(.5);
+                        backLeftDrive.setPower(-0.5);
+                        backRightDrive.setPower(-.5);
+
+                        sleep(1000);
+
+                        frontLeftDrive.setPower(0);
+                        frontRightDrive.setPower(0);
+                        backLeftDrive.setPower(0);
+                        backRightDrive.setPower(0);
+
+                        //driving into the box
+                        frontLeftDrive.setPower(0.5);
+                        frontRightDrive.setPower(0.5);
+                        backLeftDrive.setPower(0.5);
+                        backRightDrive.setPower(0.5);
+
+                        sleep(500);
+
+                        frontLeftDrive.setPower(0);
+                        frontRightDrive.setPower(0);
+                        backLeftDrive.setPower(0);
+                        backRightDrive.setPower(0);
+
                     }
                 }
                 if (AllianceColor == "blue") {
                     if (StartPosition == 3) {
-                        //Warehouse Code
+                        //Warehouse Code: Drive into the warehouse
                         move_forward(0.7, 1000);
                     } else if (StartPosition == 4) {
-                        // Courosel code
-                        move_forward(-0.7, 1000);
+                        // Courosel code: drop the duck and park in red box
+                        move_forward(-0.4, 1000);
+
+                        //putting wheel to the carousel
+                        frontLeftDrive.setPower(.2);
+                        frontRightDrive.setPower(.1);
+                        backLeftDrive.setPower(0.2);
+                        backRightDrive.setPower(.2);
+
+                        sleep(1500);
+
+                        frontLeftDrive.setPower(0);
+                        frontRightDrive.setPower(0);
+                        backLeftDrive.setPower(0);
+                        backRightDrive.setPower(0);
+
+                        run_carousel(0.3, 6000);
+
+                        //get to wall
+                        frontLeftDrive.setPower(-.5);
+                        frontRightDrive.setPower(.5);
+                        backLeftDrive.setPower(-0.5);
+                        backRightDrive.setPower(-.5);
+
+                        sleep(1000);
+
+                        frontLeftDrive.setPower(0);
+                        frontRightDrive.setPower(0);
+                        backLeftDrive.setPower(0);
+                        backRightDrive.setPower(0);
+
+                        //move to blue box
+                        frontLeftDrive.setPower(0.5);
+                        frontRightDrive.setPower(0.5);
+                        backLeftDrive.setPower(0.5);
+                        backRightDrive.setPower(0.5);
+
+                        sleep(500);
+
+                        frontLeftDrive.setPower(0);
+                        frontRightDrive.setPower(0);
+                        backLeftDrive.setPower(0);
+                        backRightDrive.setPower(0);
                     }
                 }
 
@@ -223,12 +287,13 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
                 telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontLeftPower, frontRightPower, backLeftPower, backRightPower);
                 telemetry.update();
             }
-        }
 
 
 
+    // This function is to move the robot forward or backward
     private void move_forward(double fwrdSpeed, int fwrdTime) {
-        //double forwardEndTime;
+
+        //setting motors to speed
 
         telemetry.addData("Motor on", "Run Time" + ElapsedTime2);
         telemetry.update();
@@ -236,12 +301,12 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
         frontRightPower = fwrdSpeed;
         backLeftPower = fwrdSpeed;
         backRightPower = fwrdSpeed;
-/*
+
         frontLeftDrive.setPower(frontLeftPower);
         frontRightDrive.setPower(frontRightPower);
         backLeftDrive.setPower(backLeftPower);
         backRightDrive.setPower(backRightPower);
-*/
+
         sleep(fwrdTime);
 
         telemetry.addData("Motor off", "Run Time" + ElapsedTime2);
@@ -253,6 +318,16 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
 
     }
 
+    // This function is to use the carousel. Input speed and time
+    private void run_carousel(double trnSpeed, int trnTime) {
+        carouselPower = trnSpeed;
+
+        carousel.setPower(carouselPower);
+
+        sleep(trnTime);
+
+        carousel.setPower(0);
+    }
 
     /*private void move_forward(double fwrdSpeed, int fwrdTime) {
         double forwardEndTime;
