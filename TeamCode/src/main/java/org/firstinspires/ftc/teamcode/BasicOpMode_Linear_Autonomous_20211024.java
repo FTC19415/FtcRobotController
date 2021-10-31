@@ -184,7 +184,7 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
 
                     } else if (StartPosition == 2) {
                         // Carousel code that drives to the carousel and goes into the red box
-                        move_forward(-0.4, 1000);
+                        move_forward(-0.4, 700);
 
                         //Putting motor on carousel
                         frontLeftDrive.setPower(-.2);
@@ -233,17 +233,18 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
                     if (StartPosition == 3) {
                         //Warehouse Code: Drive into the warehouse
                         move_forward(0.7, 1000);
+
                     } else if (StartPosition == 4) {
                         // Courosel code: drop the duck and park in red box
-                        move_forward(-0.4, 1000);
+                        move_forward(-0.4, 700);
 
                         //putting wheel to the carousel
-                        frontLeftDrive.setPower(.2);
-                        frontRightDrive.setPower(.1);
-                        backLeftDrive.setPower(0.2);
-                        backRightDrive.setPower(.2);
+                        frontLeftDrive.setPower(-0.4);
+                        frontRightDrive.setPower(0.4);
+                        backLeftDrive.setPower(-0.4);
+                        backRightDrive.setPower(-0.4);
 
-                        sleep(1500);
+                        sleep(1000);
 
                         frontLeftDrive.setPower(0);
                         frontRightDrive.setPower(0);
@@ -258,7 +259,7 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
                         backLeftDrive.setPower(-0.5);
                         backRightDrive.setPower(-.5);
 
-                        sleep(1000);
+                        sleep(1100);
 
                         frontLeftDrive.setPower(0);
                         frontRightDrive.setPower(0);
@@ -266,10 +267,10 @@ public class BasicOpMode_Linear_Autonomous_20211024 extends LinearOpMode {
                         backRightDrive.setPower(0);
 
                         //move to blue box
-                        frontLeftDrive.setPower(0.5);
-                        frontRightDrive.setPower(0.5);
-                        backLeftDrive.setPower(0.5);
-                        backRightDrive.setPower(0.5);
+                        frontLeftDrive.setPower(-0.5);
+                        frontRightDrive.setPower(-0.5);
+                        backLeftDrive.setPower(-0.5);
+                        backRightDrive.setPower(-0.5);
 
                         sleep(500);
 
