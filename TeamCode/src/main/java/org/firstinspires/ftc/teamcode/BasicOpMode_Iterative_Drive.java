@@ -84,6 +84,11 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         clawObj = hardwareMap.get(Servo.class, "Claw");
         LinearArmObj = hardwareMap.get(DcMotor.class, "LinearArm");
         ArmStop = hardwareMap.get(TouchSensor.class, "ArmStop");
+
+        LinearArmObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        LinearArmObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armObj.setTargetPosition(0);
         armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -142,6 +147,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         ElapsedTime ElapsedTime2;
         int ghostingTime;
         double fltNormalFactor;
+        int currentLinearArmPosition = 0;
 
 
 
@@ -241,12 +247,16 @@ public class BasicOpMode_Iterative_Drive extends OpMode
 
         if (gamepad2.dpad_up) {
             LinearArmObj.setPower(1);
+            //LinearArmObj.setTargetPosition(currentLinearArmPosition + 100);
+            //currentLinearArmPosition = LinearArmObj.getTargetPosition();
         } else {
             LinearArmObj.setPower(0);
         }
 
         if (gamepad2.dpad_down) {
             LinearArmObj.setPower(-1);
+            //LinearArmObj.setTargetPosition(currentLinearArmPosition - 100);
+            //currentLinearArmPosition = LinearArmObj.getTargetPosition();
         } else {
             LinearArmObj.setPower(0);
         }
@@ -270,6 +280,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
 
 
         // Show the elapsed game time and wheel power.
+        telemetry.addData("Linear Arm position:", LinearArmObj.getCurrentPosition());
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontLeftPower, frontRightPower, backLeftPower, backRightPower);
     }
