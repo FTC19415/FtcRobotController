@@ -238,11 +238,13 @@ public class BasicOpMode_Iterative_Drive extends OpMode
             intArmPosition = 0;
         }*/
 
-
+// If it was flat use open-0.7, close-1
+        // fancy rubber arm open-.65, close-1
+        //OG sttings open-0.2, close-0.6
         if (gamepad2.right_bumper) {
-            clawObj.setPosition(0.6);
+            clawObj.setPosition(.6);
         } else {
-            clawObj.setPosition(0.2);
+            clawObj.setPosition(.2);
         }
 
         if (gamepad2.dpad_up) {
