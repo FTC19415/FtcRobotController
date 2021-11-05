@@ -152,7 +152,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
 
 
         intArmPosition = 0;
-        intArmPositionPick = 5900;
+        intArmPositionPick = 5850;
         intArmPositionDropMid = 4700;
         intArmPositionDrive = 2600;
         intArmPositionDropUp = 3700;
@@ -195,19 +195,14 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         }
         if (gamepad2.b) {
             if (ElapsedTime2.milliseconds() > YTimer) {
-                if (armObj.getTargetPosition() == intArmPositionDropUp) {
                     armObj.setTargetPosition(intArmPositionDropMid);
                     armObj.setPower(1);
-                } else {
-                    armObj.setTargetPosition(intArmPositionDropUp);
-                    armObj.setPower(1);
-                }
             }
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }
         if (gamepad2.y) {
             if (ElapsedTime2.milliseconds() > YTimer) {
-                    armObj.setTargetPosition(intArmPositionDrive);
+                    armObj.setTargetPosition(intArmPositionDropUp);
                     armObj.setPower(1);
                 }
 

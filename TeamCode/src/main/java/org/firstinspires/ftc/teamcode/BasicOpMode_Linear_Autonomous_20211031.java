@@ -188,11 +188,11 @@ public class BasicOpMode_Linear_Autonomous_20211031 extends LinearOpMode {
 
                         //Putting motor on carousel
                         frontLeftDrive.setPower(-.2);
-                        frontRightDrive.setPower(.2);
+                        frontRightDrive.setPower(.5);
                         backLeftDrive.setPower(-0.2);
                         backRightDrive.setPower(-.2);
 
-                        sleep(1500);
+                        sleep(1900);
 
                         frontLeftDrive.setPower(0);
                         frontRightDrive.setPower(0);
@@ -207,7 +207,7 @@ public class BasicOpMode_Linear_Autonomous_20211031 extends LinearOpMode {
                         backLeftDrive.setPower(-0.5);
                         backRightDrive.setPower(-.5);
 
-                        sleep(1000);
+                        sleep(250);
 
                         frontLeftDrive.setPower(0);
                         frontRightDrive.setPower(0);
@@ -220,7 +220,7 @@ public class BasicOpMode_Linear_Autonomous_20211031 extends LinearOpMode {
                         backLeftDrive.setPower(0.5);
                         backRightDrive.setPower(0.5);
 
-                        sleep(500);
+                        sleep(900);
 
                         frontLeftDrive.setPower(0);
                         frontRightDrive.setPower(0);
@@ -240,7 +240,7 @@ public class BasicOpMode_Linear_Autonomous_20211031 extends LinearOpMode {
 
                         //putting wheel to the carousel
                         frontLeftDrive.setPower(-0.4);
-                        frontRightDrive.setPower(0.4);
+                        frontRightDrive.setPower(0.5);
                         backLeftDrive.setPower(-0.4);
                         backRightDrive.setPower(-0.4);
 
