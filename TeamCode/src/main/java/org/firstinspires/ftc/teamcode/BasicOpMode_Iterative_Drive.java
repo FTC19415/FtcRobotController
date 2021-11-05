@@ -152,10 +152,10 @@ public class BasicOpMode_Iterative_Drive extends OpMode
 
 
         intArmPosition = 0;
-        intArmPositionPick = 5300;
-        intArmPositionDropMid = 4200;
-        intArmPositionDrive = 2000;
-        intArmPositionDropUp = 3200;
+        intArmPositionPick = 5900;
+        intArmPositionDropMid = 4700;
+        intArmPositionDrive = 2600;
+        intArmPositionDropUp = 3700;
 
 
 
@@ -242,9 +242,9 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         // fancy rubber arm open-.65, close-1
         //OG sttings open-0.2, close-0.6
         if (gamepad2.right_bumper) {
-            clawObj.setPosition(.6);
+            clawObj.setPosition(.7);
         } else {
-            clawObj.setPosition(.2);
+            clawObj.setPosition(1);
         }
 
         if (gamepad2.dpad_up) {
