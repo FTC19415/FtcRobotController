@@ -216,7 +216,7 @@ public class BasicOpMode_Iterative_Drive extends OpMode
 
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }
-        if (gamepad2.x) {
+        /*if (gamepad2.x) {
             if (ElapsedTime2.milliseconds() > YTimer) {
                 armObj.setTargetPosition(intArmPosition);
                 armObj.setPower(-1);
@@ -225,13 +225,20 @@ public class BasicOpMode_Iterative_Drive extends OpMode
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }
 
-        /*if (gamepad2.x) {
+         */
+
+        if (gamepad2.x) {
+            armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             while (!ArmStop.isPressed()) {
-                armObj.setPower(-0.3);
+                armObj.setPower(-.6);
             }
             armObj.setPower(0);
-            intArmPosition = 0;
-        }*/
+            armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            armObj.setTargetPosition(0);
+            armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        }
 
 // If it was flat use open-0.7, close-1
         // fancy rubber arm open-.65, close-1
@@ -279,6 +286,8 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         // Show the elapsed game time and wheel power.
         telemetry.addData("Linear Arm position:", LinearArmObj.getCurrentPosition());
         telemetry.addData("Status", "Run Time: " + runtime.toString());
+        telemetry.addData("Is button pressed:", ArmStop.isPressed());
+
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontLeftPower, frontRightPower, backLeftPower, backRightPower);
     }
 

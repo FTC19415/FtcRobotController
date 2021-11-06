@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 //import com.qualcomm.robotcore.util.Range;
 
@@ -63,12 +64,14 @@ public class BasicOpMode_Linear_Autonomous_20211031 extends LinearOpMode {
     private DcMotor carousel = null;
     private DcMotor arm = null;
     private DcMotor linearArm = null;
-    private Servo claw = null;
+    private Servo clawObj = null;
     double frontLeftPower;
     double frontRightPower;
     double backLeftPower;
     double backRightPower;
     double carouselPower;
+    private DcMotor armObj = null;
+    private TouchSensor ArmStop;
     ElapsedTime ElapsedTime2;
     //private BNO055IMU imu;
 
@@ -89,7 +92,11 @@ public class BasicOpMode_Linear_Autonomous_20211031 extends LinearOpMode {
         backLeftDrive = hardwareMap.get(DcMotor.class, "backLeftMotor");
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightMotor");
         carousel = hardwareMap.get(DcMotor.class, "carousel");
-       // imu = hardwareMap.get(BNO055IMU.class, "imu");
+        clawObj = hardwareMap.get(Servo.class, "Claw");
+        armObj = hardwareMap.get(DcMotor.class, "Arm");
+        ArmStop = hardwareMap.get(TouchSensor.class, "ArmStop");
+
+        // imu = hardwareMap.get(BNO055IMU.class, "imu");
 
         //initialize the camera
 
@@ -113,7 +120,6 @@ public class BasicOpMode_Linear_Autonomous_20211031 extends LinearOpMode {
         //arm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //arm.setTargetPosition(0);
        //arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
 
         // Input starting position and alliance color by usuing the controllers
         while (!(gamepad1.y)) {
@@ -155,6 +161,8 @@ public class BasicOpMode_Linear_Autonomous_20211031 extends LinearOpMode {
         telemetry.addData("Alliance Color:", AllianceColor);
         telemetry.addData("Starting Position:", StartPosition);
         telemetry.update();
+
+        clawObj.setPosition(.7);
 
         //initializing parameters
         /*IMU_Parameters = new BNO055IMU.Parameters();
@@ -281,6 +289,9 @@ public class BasicOpMode_Linear_Autonomous_20211031 extends LinearOpMode {
                     }
                 }
 
+        while (!ArmStop.isPressed()) {
+            armObj.setPower(-.6);
+        }
 
 
                 // Show the elapsed game time and wheel power.
