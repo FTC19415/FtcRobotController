@@ -27,14 +27,13 @@ package org.firstinspires.ftc.teamcode;/* Copyright (c) 2017 FIRST. All rights r
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -50,9 +49,9 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Mechanum Drive", group="Iterative Opmode")
-@Disabled
-public class BasicOpMode_Iterative_Drive extends OpMode
+@TeleOp(name="Mechanum Drive 07", group="Iterative Opmode")
+//@Disabled
+public class BasicOpMode_Iterative_Drive_211107 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -131,10 +130,11 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         double frontRightPower;
         double backLeftPower;
         double backRightPower;
-        double carouselPower;
+        double armPower;
         double fltForward;
         double fltStrafe;
         double fltPivot;
+        double fltArm;
         double claw;
         double arm;
         double LinearArm;
@@ -167,6 +167,8 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         // - This uses basic math to combine motions and is easier to drive straight.
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
+        double up = gamepad2.left_stick_y;
+        double down = -gamepad2.right_stick_y;
         YTimer = 0;
         YTimerTwo = 0;
         ElapsedTime2 = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
@@ -177,11 +179,15 @@ public class BasicOpMode_Iterative_Drive extends OpMode
         fltStrafe = gamepad1.left_stick_x;
         fltPivot = gamepad1.right_stick_x;
 
+        fltArm = gamepad2.left_stick_y;
+
 
         frontLeftPower    = Range.clip(drive + turn, -0.3, 0.3) ;
         frontRightPower   = Range.clip(drive - turn, -0.3, 0.3) ;
         backLeftPower    = Range.clip(drive + turn, -0.3, 0.3) ;
         backRightPower   = Range.clip(drive - turn, -0.3, 0.3) ;
+
+        armPower = Range.clip(up + down,-.7, .7);
 
         if (gamepad1.left_bumper) {
             carousel.setPower(-0.7);
@@ -244,10 +250,13 @@ public class BasicOpMode_Iterative_Drive extends OpMode
 // If it was flat use open-0.7, close-1
         // fancy rubber arm open-.65, close-1
         //OG sttings open-0.2, close-0.6
+
         if (gamepad2.right_bumper) {
             clawObj.setPosition(.7);
-        } else {
+        } else if (gamepad2.left_bumper) {
             clawObj.setPosition(1);
+        }else{
+            clawObj.setPosition(.9);
         }
 
         if (gamepad2.dpad_up) {
@@ -276,11 +285,16 @@ public class BasicOpMode_Iterative_Drive extends OpMode
             fltPivot = fltNormalFactor * gamepad1.right_stick_x;
         }
 
+        fltArm = gamepad2.left_stick_y;
+
+
         // Send calculated power to wheels
         frontLeftDrive.setPower(fltForward + fltStrafe + fltPivot);
         frontRightDrive.setPower(fltForward + -fltStrafe + -fltPivot);
         backLeftDrive.setPower(fltForward + -fltStrafe + fltPivot);
         backRightDrive.setPower(fltForward + fltStrafe + -fltPivot);
+
+        armObj.setPower(fltArm);
 
 
 
