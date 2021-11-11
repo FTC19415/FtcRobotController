@@ -130,14 +130,10 @@ public class BasicOpMode_Iterative_Drive_211111 extends OpMode
         double frontRightPower;
         double backLeftPower;
         double backRightPower;
-        double armPower;
         double fltForward;
         double fltStrafe;
         double fltPivot;
         double fltArm;
-        double claw;
-        double arm;
-        double LinearArm;
         int intArmPosition;
         int intArmPositionPick;
         int intArmPositionDropMid;
@@ -197,7 +193,7 @@ public class BasicOpMode_Iterative_Drive_211111 extends OpMode
         backLeftPower    = Range.clip(drive + turn, -0.3, 0.3) ;
         backRightPower   = Range.clip(drive - turn, -0.3, 0.3) ;
 
-        armPower = Range.clip(up + down,-.7, .7);
+        double armPower = Range.clip(up + down, -.7, .7);
 
         if (gamepad1.left_bumper) {
             carousel.setPower(-0.7);
