@@ -27,7 +27,6 @@ package org.firstinspires.ftc.teamcode;/* Copyright (c) 2017 FIRST. All rights r
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -50,9 +49,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Mechanum Drive 07", group="Iterative Opmode")
-@Disabled
-public class BasicOpMode_Iterative_Drive_211107 extends OpMode
+@TeleOp(name="Mechanum Drive 10", group="Iterative Opmode")
+//@Disabled
+public class BasicOpMode_Iterative_Drive_211110 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -92,7 +91,7 @@ public class BasicOpMode_Iterative_Drive_211107 extends OpMode
         armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armObj.setTargetPosition(0);
-        armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        //armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -152,6 +151,16 @@ public class BasicOpMode_Iterative_Drive_211107 extends OpMode
         int currentLinearArmPosition = 0;
 
 
+        armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+        if (gamepad2.a || gamepad2.b || gamepad2.y){
+            armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }else{
+            armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
 
         intArmPosition = 0;
         intArmPositionPick = 5850;
@@ -180,7 +189,7 @@ public class BasicOpMode_Iterative_Drive_211107 extends OpMode
         fltStrafe = gamepad1.left_stick_x;
         fltPivot = gamepad1.right_stick_x;
 
-        fltArm = gamepad2.left_stick_y;
+        fltArm = -gamepad2.left_stick_y;
 
 
         frontLeftPower    = Range.clip(drive + turn, -0.3, 0.3) ;
@@ -202,6 +211,7 @@ public class BasicOpMode_Iterative_Drive_211107 extends OpMode
             carousel.setPower(0);
         }
         if (gamepad2.b) {
+            armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             if (ElapsedTime2.milliseconds() > YTimer) {
                     armObj.setTargetPosition(intArmPositionDropMid);
                     armObj.setPower(1);
@@ -210,6 +220,7 @@ public class BasicOpMode_Iterative_Drive_211107 extends OpMode
         }
         if (gamepad2.y) {
             if (ElapsedTime2.milliseconds() > YTimer) {
+                armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armObj.setTargetPosition(intArmPositionDropUp);
                     armObj.setPower(1);
                 }
@@ -217,6 +228,7 @@ public class BasicOpMode_Iterative_Drive_211107 extends OpMode
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }
         if (gamepad2.a) {
+            armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             if (ElapsedTime2.milliseconds() > YTimer) {
                 armObj.setTargetPosition(intArmPositionPick);
                 armObj.setPower(1);
@@ -286,7 +298,7 @@ public class BasicOpMode_Iterative_Drive_211107 extends OpMode
             fltPivot = fltNormalFactor * gamepad1.right_stick_x;
         }
 
-        fltArm = gamepad2.left_stick_y;
+        fltArm = -gamepad2.left_stick_y;
 
 
         // Send calculated power to wheels
