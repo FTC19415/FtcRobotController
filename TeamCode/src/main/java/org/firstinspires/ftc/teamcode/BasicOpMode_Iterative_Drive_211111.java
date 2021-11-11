@@ -49,9 +49,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Mechanum Drive 10", group="Iterative Opmode")
+@TeleOp(name="Mechanum Drive 11", group="Iterative Opmode")
 //@Disabled
-public class BasicOpMode_Iterative_Drive_211110 extends OpMode
+public class BasicOpMode_Iterative_Drive_211111 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -163,7 +163,7 @@ public class BasicOpMode_Iterative_Drive_211110 extends OpMode
         }
 
         intArmPosition = 0;
-        intArmPositionPick = 5850;
+        intArmPositionPick = 5800;
         intArmPositionDropMid = 4700;
         intArmPositionDrive = 2600;
         intArmPositionDropUp = 3700;
