@@ -27,7 +27,6 @@ package org.firstinspires.ftc.teamcode;/* Copyright (c) 2017 FIRST. All rights r
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -50,9 +49,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Mechanum Drive 10", group="Iterative Opmode")
-@Disabled
-public class BasicOpMode_Iterative_Drive_211110 extends OpMode
+@TeleOp(name="Mechanum Drive 12", group="Iterative Opmode")
+//@Disabled
+public class BasicOpMode_Iterative_Drive_211112 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -65,6 +64,8 @@ public class BasicOpMode_Iterative_Drive_211110 extends OpMode
     private DcMotor LinearArmObj = null;
     private Servo clawObj = null;
     private TouchSensor ArmStop;
+    private boolean isArmButtonPressed = true;
+
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -92,6 +93,7 @@ public class BasicOpMode_Iterative_Drive_211110 extends OpMode
         armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armObj.setTargetPosition(0);
+        armObj.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -106,6 +108,8 @@ public class BasicOpMode_Iterative_Drive_211110 extends OpMode
         telemetry.addData("Status", "Initialized");
     }
 
+
+
     /*
      * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
      */
@@ -119,6 +123,7 @@ public class BasicOpMode_Iterative_Drive_211110 extends OpMode
     @Override
     public void start() {
         runtime.reset();
+        isArmButtonPressed = true;
     }
 
     /*
@@ -131,14 +136,10 @@ public class BasicOpMode_Iterative_Drive_211110 extends OpMode
         double frontRightPower;
         double backLeftPower;
         double backRightPower;
-        double armPower;
         double fltForward;
         double fltStrafe;
         double fltPivot;
         double fltArm;
-        double claw;
-        double arm;
-        double LinearArm;
         int intArmPosition;
         int intArmPositionPick;
         int intArmPositionDropMid;
@@ -150,41 +151,29 @@ public class BasicOpMode_Iterative_Drive_211110 extends OpMode
         int ghostingTime;
         double fltNormalFactor;
         int currentLinearArmPosition = 0;
-
-
-        armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-
-        if (gamepad2.a || gamepad2.b || gamepad2.y){
-            armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }else{
-            armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-
+        ElapsedTime2 = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
+        ghostingTime = 200;
+        fltNormalFactor = 0.4;
         intArmPosition = 0;
-        intArmPositionPick = 5850;
+        intArmPositionPick = 5800;
         intArmPositionDropMid = 4700;
         intArmPositionDrive = 2600;
         intArmPositionDropUp = 3700;
-
-
-
-
-        // Comment out the method that's not used.  The default below is POV.
-
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
         double up = gamepad2.left_stick_y;
         double down = -gamepad2.right_stick_y;
         YTimer = 0;
         YTimerTwo = 0;
-        ElapsedTime2 = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
-        ghostingTime = 200;
-        fltNormalFactor = 0.4;
+
+
+        frontLeftPower    = Range.clip(drive + turn, -0.3, 0.3) ;
+        frontRightPower   = Range.clip(drive - turn, -0.3, 0.3) ;
+        backLeftPower    = Range.clip(drive + turn, -0.3, 0.3) ;
+        backRightPower   = Range.clip(drive - turn, -0.3, 0.3) ;
+
+        double armPowerDown = Range.clip(down, -.7, -.05);
+        double armPowerUp = Range.clip(up, .05, .7);
 
         fltForward = -gamepad1.left_stick_y;
         fltStrafe = gamepad1.left_stick_x;
@@ -193,12 +182,88 @@ public class BasicOpMode_Iterative_Drive_211110 extends OpMode
         fltArm = -gamepad2.left_stick_y;
 
 
-        frontLeftPower    = Range.clip(drive + turn, -0.3, 0.3) ;
-        frontRightPower   = Range.clip(drive - turn, -0.3, 0.3) ;
-        backLeftPower    = Range.clip(drive + turn, -0.3, 0.3) ;
-        backRightPower   = Range.clip(drive - turn, -0.3, 0.3) ;
 
-        armPower = Range.clip(up + down,-.7, .7);
+        //This controls ALL arm movement
+        if (gamepad2.left_stick_y <= 1 && gamepad2.left_stick_y > 0.05) {
+            if (armObj.getCurrentPosition() >= 50){
+                armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                armObj.setPower(fltArm);
+                isArmButtonPressed = false;
+            }else{
+                armObj.setPower(0);
+            }
+        }else if(gamepad2.left_stick_y >= -1 && gamepad2.left_stick_y < -0.05){
+            if (armObj.getCurrentPosition() < intArmPositionPick - 50){
+                armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                armObj.setPower(fltArm);
+                isArmButtonPressed = false;
+            }else{
+                 armObj.setPower(0);
+             }
+
+        }else if (gamepad2.b) {
+            if (ElapsedTime2.milliseconds() > YTimer) {
+                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                //armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armObj.setTargetPosition(intArmPositionDropMid);
+                armObj.setPower(1);
+                isArmButtonPressed = true;
+            }
+            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+        }else if (gamepad2.y) {
+            if (ElapsedTime2.milliseconds() > YTimer) {
+                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                //armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armObj.setTargetPosition(intArmPositionDropUp);
+                armObj.setPower(1);
+                isArmButtonPressed = true;
+            }
+
+            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+        }else if (gamepad2.a) {
+            if (ElapsedTime2.milliseconds() > YTimer) {
+
+                armObj.setTargetPosition(intArmPositionPick);
+                armObj.setPower(1);
+                isArmButtonPressed = true;
+            }
+
+            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+        }else if (gamepad2.x) {
+            armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            while (!ArmStop.isPressed()) {
+                armObj.setPower(-.6);
+            }
+            armObj.setPower(0);
+            armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            armObj.setTargetPosition(0);
+            armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            isArmButtonPressed = true;
+
+        }else if (isArmButtonPressed) {
+            // Do nothing but keep running to position
+        } else {
+            //stop the arm if the arm stick is not active
+            armObj.setPower(0);
+            armObj.setTargetPosition(armObj.getCurrentPosition());
+            armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        }
+
+
+
+
+        // Comment out the method that's not used.  The default below is POV.
+
+        // POV Mode uses left stick to go forward, and right stick to turn.
+        // - This uses basic math to combine motions and is easier to drive straight.
+
 
         if (gamepad1.left_bumper) {
             carousel.setPower(-0.7);
@@ -211,55 +276,7 @@ public class BasicOpMode_Iterative_Drive_211110 extends OpMode
         } else {
             carousel.setPower(0);
         }
-        if (gamepad2.b) {
-            if (ElapsedTime2.milliseconds() > YTimer) {
-                armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    armObj.setTargetPosition(intArmPositionDropMid);
-                    armObj.setPower(1);
-            }
-            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
-        }
-        if (gamepad2.y) {
-            if (ElapsedTime2.milliseconds() > YTimer) {
-                armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    armObj.setTargetPosition(intArmPositionDropUp);
-                    armObj.setPower(1);
-                }
 
-            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
-        }
-        if (gamepad2.a) {
-            if (ElapsedTime2.milliseconds() > YTimer) {
-                armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                armObj.setTargetPosition(intArmPositionPick);
-                armObj.setPower(1);
-            }
-
-            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
-        }
-        /*if (gamepad2.x) {
-            if (ElapsedTime2.milliseconds() > YTimer) {
-                armObj.setTargetPosition(intArmPosition);
-                armObj.setPower(-1);
-            }
-
-            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
-        }
-
-         */
-
-        if (gamepad2.x) {
-            armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            while (!ArmStop.isPressed()) {
-                armObj.setPower(-.6);
-            }
-            armObj.setPower(0);
-            armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            armObj.setTargetPosition(0);
-            armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        }
 
 // If it was flat use open-0.7, close-1
         // fancy rubber arm open-.65, close-1
@@ -299,8 +316,6 @@ public class BasicOpMode_Iterative_Drive_211110 extends OpMode
             fltPivot = fltNormalFactor * gamepad1.right_stick_x;
         }
 
-        fltArm = -gamepad2.left_stick_y;
-
 
         // Send calculated power to wheels
         frontLeftDrive.setPower(fltForward + fltStrafe + fltPivot);
@@ -308,15 +323,15 @@ public class BasicOpMode_Iterative_Drive_211110 extends OpMode
         backLeftDrive.setPower(fltForward + -fltStrafe + fltPivot);
         backRightDrive.setPower(fltForward + fltStrafe + -fltPivot);
 
-        armObj.setPower(fltArm);
-
 
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Linear Arm position:", LinearArmObj.getCurrentPosition());
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Is button pressed:", ArmStop.isPressed());
-
+        telemetry.addData("Arm Position:", armObj.getCurrentPosition());
+        telemetry.addData("Was Arm button last action?:", isArmButtonPressed);
+        telemetry.addData("Stick Movement:", gamepad2.left_stick_y);
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontLeftPower, frontRightPower, backLeftPower, backRightPower);
     }
 
