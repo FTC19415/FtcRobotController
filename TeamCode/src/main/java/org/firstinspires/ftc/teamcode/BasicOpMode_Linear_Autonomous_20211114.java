@@ -59,9 +59,9 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Autonomous 11", group="Linear Opmode")
+@Autonomous(name="Autonomous 14", group="Linear Opmode")
 //@Disabled
-public class BasicOpMode_Linear_Autonomous_20211111 extends LinearOpMode {
+public class BasicOpMode_Linear_Autonomous_20211114 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -81,6 +81,8 @@ public class BasicOpMode_Linear_Autonomous_20211111 extends LinearOpMode {
     private DcMotor armObj = null;
     private TouchSensor ArmStop;
     ElapsedTime ElapsedTime2;
+    String AllianceColor = null;
+    int StartPosition = 0;
     //private BNO055IMU imu;
 
     private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
@@ -111,8 +113,7 @@ public class BasicOpMode_Linear_Autonomous_20211111 extends LinearOpMode {
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-        String AllianceColor = null;
-        int StartPosition = 0;
+
        // BNO055IMU.Parameters IMU_Parameters;
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -143,7 +144,7 @@ public class BasicOpMode_Linear_Autonomous_20211111 extends LinearOpMode {
             // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
             // should be set to the value of the images used to create the TensorFlow Object Detection model
             // (typically 16/9).
-            tfod.setZoom(1, 24.0/4.0);
+            tfod.setZoom(1, 24.0/5.0);
         }
 
 
@@ -187,31 +188,47 @@ public class BasicOpMode_Linear_Autonomous_20211111 extends LinearOpMode {
                 }
                 telemetry.update();
             }
-            while (!(gamepad1.dpad_up || gamepad1.dpad_right || gamepad1.dpad_down || gamepad1.dpad_left)) {
-                telemetry.addData("To switch starting positions Use the D-Pad:", "Up is 1, right is 2, down is 3, left is 4");
-                if (gamepad1.dpad_up) {
-                    // red side closest to the warehouse
-                    StartPosition = 1;
-                } else if (gamepad1.dpad_right) {
+            while (!(gamepad1.dpad_up ||  gamepad1.dpad_down)) {
+                telemetry.addData("To switch starting positions Use the D-Pad:", "Up is warehouse, down is carousel");
+                if (AllianceColor == "red"){
+                    if (gamepad1.dpad_up) {
+                        // red side closest to the warehouse
+                        StartPosition = 1;
+                } else if (gamepad1.dpad_down) {
                     // red side closest to the carousel
                     StartPosition = 2;
-                } else if (gamepad1.dpad_down) {
-                    // blue side closest to the warehouse
-                    StartPosition = 3;
-                } else if (gamepad1.dpad_left) {
-                    // blue side closest to the carousel
-                    StartPosition = 4;
+                }
+                } else if (AllianceColor == "blue") {
+                     if (gamepad1.dpad_up) {
+                        // blue side closest to the warehouse
+                        StartPosition = 3;
+                    } else if (gamepad1.dpad_down) {
+                        // blue side closest to the carousel
+                        StartPosition = 4;
+                    }
                 }
                 telemetry.addData("Alliance Color:", AllianceColor);
-                telemetry.addData("Starting Position:", StartPosition);
+
+                if (StartPosition == 1 || StartPosition == 3){
+                    telemetry.addData("Starting Position:", "Warehouse");
+                } else if (StartPosition == 2 || StartPosition == 4){
+                    telemetry.addData("Starting Position:", "carousel");
+                }
                 telemetry.update();
             }
             telemetry.addData("Alliance Color:", AllianceColor);
-            telemetry.addData("Starting Position:", StartPosition);
+
+            if (StartPosition == 1 || StartPosition == 3){
+                telemetry.addData("Starting Position:", "Warehouse");
+            } else if (StartPosition == 2 || StartPosition == 4){
+                telemetry.addData("Starting Position:", "carousel");
+            }
             telemetry.update();
         }
-        telemetry.addData("Alliance Color:", AllianceColor);
-        telemetry.addData("Starting Position:", StartPosition);
+
+
+
+
         telemetry.update();
 
         clawObj.setPosition(.7);
@@ -245,6 +262,13 @@ public class BasicOpMode_Linear_Autonomous_20211111 extends LinearOpMode {
                                 recognition.getRight(), recognition.getBottom());
                         i++;
                       }
+                        telemetry.addData("Alliance Color:", AllianceColor);
+
+                        if (StartPosition == 1 || StartPosition == 3){
+                            telemetry.addData("Starting Position:", "Warehouse");
+                        } else if (StartPosition == 2 || StartPosition == 4){
+                            telemetry.addData("Starting Position:", "carousel");
+                        }
                       telemetry.update();
                     }
                 }
