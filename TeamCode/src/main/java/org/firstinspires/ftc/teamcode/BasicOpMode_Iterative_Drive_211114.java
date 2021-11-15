@@ -49,9 +49,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Mechanum Drive 12", group="Iterative Opmode")
+@TeleOp(name="Mechanum Drive 14", group="Iterative Opmode")
 //@Disabled
-public class BasicOpMode_Iterative_Drive_211112 extends OpMode
+public class BasicOpMode_Iterative_Drive_211114 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -136,6 +136,7 @@ public class BasicOpMode_Iterative_Drive_211112 extends OpMode
         double frontRightPower;
         double backLeftPower;
         double backRightPower;
+        double carouselPower = 0.3;
         double fltForward;
         double fltStrafe;
         double fltPivot;
@@ -155,7 +156,7 @@ public class BasicOpMode_Iterative_Drive_211112 extends OpMode
         ghostingTime = 200;
         fltNormalFactor = 0.4;
         intArmPosition = 0;
-        intArmPositionPick = 6000; //new robot changed from 5800 to 6000 20211114
+        intArmPositionPick = 5900; //new robot changed from 5800 to 6000 20211114
         intArmPositionDropMid = 4700;
         intArmPositionDrive = 2600;
         intArmPositionDropUp = 3700;
@@ -236,8 +237,21 @@ public class BasicOpMode_Iterative_Drive_211112 extends OpMode
         }else if (gamepad2.x) {
             armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             while (!ArmStop.isPressed()) {
+                LinearArmObj.setTargetPosition(0);
+                if (LinearArmObj.getCurrentPosition() > 800) {
+                    LinearArmObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    LinearArmObj.setPower(-.7);
+                    //LinearArmObj.setTargetPosition(currentLinearArmPosition - 100);
+                    //currentLinearArmPosition = LinearArmObj.getTargetPosition();
+                }else if (LinearArmObj.getCurrentPosition() > 75){
+
+                    LinearArmObj.setPower(-.4);
+                    //LinearArmObj.setTargetPosition(currentLinearArmPosition + 100);
+                    //currentLinearArmPosition = LinearArmObj.getTargetPosition();
+                }
                 armObj.setPower(-.6);
             }
+
             armObj.setPower(0);
             armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -264,17 +278,26 @@ public class BasicOpMode_Iterative_Drive_211112 extends OpMode
         // POV Mode uses left stick to go forward, and right stick to turn.
         // - This uses basic math to combine motions and is easier to drive straight.
 
-
-        if (gamepad1.left_bumper) {
-            carousel.setPower(-0.7);
-        } else {
-            carousel.setPower(0);
-        }
-
-        if (gamepad1.right_bumper) {
-            carousel.setPower(0.7);  //changed from .5 20211114
-        } else {
-            carousel.setPower(0);
+        // Carousel Spinner motor section
+        if (gamepad1.left_trigger > fltNormalFactor) {
+            carouselPower = 0.5;
+            if (gamepad1.left_bumper) {
+                carousel.setPower(-carouselPower);
+            } else if (gamepad1.right_bumper) {
+                carousel.setPower(carouselPower);  //changed from .5 20211114
+            } else {
+                // Shut off the motor
+                carousel.setPower(0);
+            }
+        }else{
+            if (gamepad1.left_bumper) {
+                carousel.setPower(-carouselPower);
+            } else if (gamepad1.right_bumper) {
+                carousel.setPower(carouselPower);  //changed from .5 20211114
+            } else {
+                // Shut off the motor
+                carousel.setPower(0);
+            }
         }
 
 
@@ -296,14 +319,36 @@ public class BasicOpMode_Iterative_Drive_211112 extends OpMode
         //Linear Arm movement
         if (gamepad2.dpad_up) {
             //Extend
-            LinearArmObj.setPower(1);
-            //LinearArmObj.setTargetPosition(currentLinearArmPosition + 100);
-            //currentLinearArmPosition = LinearArmObj.getTargetPosition();
+            if (LinearArmObj.getCurrentPosition() < 2250) {
+                LinearArmObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                LinearArmObj.setPower(1);
+            }else if (LinearArmObj.getCurrentPosition() < 2750){
+
+                LinearArmObj.setPower(.4);
+                //LinearArmObj.setTargetPosition(currentLinearArmPosition + 100);
+                //currentLinearArmPosition = LinearArmObj.getTargetPosition();
+            }else {
+                telemetry.addData("Extend limit reached: ", LinearArmObj.getCurrentPosition());
+                LinearArmObj.setPower(0);
+            }
         } else if (gamepad2.dpad_down) {
             //Retract
-            LinearArmObj.setPower(-1);
-            //LinearArmObj.setTargetPosition(currentLinearArmPosition - 100);
-            //currentLinearArmPosition = LinearArmObj.getTargetPosition();
+                if (LinearArmObj.getCurrentPosition() > 700) {
+                    LinearArmObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    LinearArmObj.setPower(-1);
+                    //LinearArmObj.setTargetPosition(currentLinearArmPosition - 100);
+                    //currentLinearArmPosition = LinearArmObj.getTargetPosition();
+                }else if (LinearArmObj.getCurrentPosition() > 75){
+
+                    LinearArmObj.setPower(-.4);
+                    //LinearArmObj.setTargetPosition(currentLinearArmPosition + 100);
+                    //currentLinearArmPosition = LinearArmObj.getTargetPosition();
+                }else {
+                    LinearArmObj.setPower(0);
+                    telemetry.addData("Extend limit reached: ", LinearArmObj.getCurrentPosition());
+                }
         } else {
             LinearArmObj.setPower(0);
         }
@@ -330,7 +375,7 @@ public class BasicOpMode_Iterative_Drive_211112 extends OpMode
         // Show the elapsed game time and wheel power.
         telemetry.addData("Linear Arm position:", LinearArmObj.getCurrentPosition());
         telemetry.addData("Status", "Run Time: " + runtime.toString());
-        telemetry.addData("Is button pressed:", ArmStop.isPressed());
+        telemetry.addData("Is Arm Stop pressed:", ArmStop.isPressed());
         telemetry.addData("Arm Position:", armObj.getCurrentPosition());
         telemetry.addData("Was Arm button last action?:", isArmButtonPressed);
         telemetry.addData("Stick Movement:", gamepad2.left_stick_y);
