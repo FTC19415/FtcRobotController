@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -60,9 +59,9 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Autonomous 15", group="Linear Opmode")
-@Disabled
-public class BasicOpMode_Linear_Autonomous_20211115 extends LinearOpMode {
+@Autonomous(name="Autonomous 18", group="Linear Opmode")
+//@Disabled
+public class BasicOpMode_Linear_Autonomous_20211118 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -112,8 +111,6 @@ public class BasicOpMode_Linear_Autonomous_20211115 extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
 
        // BNO055IMU.Parameters IMU_Parameters;
 
@@ -278,7 +275,8 @@ public class BasicOpMode_Linear_Autonomous_20211115 extends LinearOpMode {
                       telemetry.update();
                     }
                 }
-
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
             runtime.reset();
@@ -310,7 +308,7 @@ public class BasicOpMode_Linear_Autonomous_20211115 extends LinearOpMode {
 
                         //Putting motor on carousel
                         frontLeftDrive.setPower(-.2);
-                        frontRightDrive.setPower(.5);
+                        frontRightDrive.setPower(.2);
                         backLeftDrive.setPower(-0.2);
                         backRightDrive.setPower(-.2);
 
@@ -369,27 +367,44 @@ public class BasicOpMode_Linear_Autonomous_20211115 extends LinearOpMode {
                 if (AllianceColor == "blue") {
                     if (StartPosition == 3) {
                         //Warehouse Code: Drive into the warehouse
-                        move_forward(0.7, 1000);
+                        turn(0.5, 550, "right");
+                        armObj.setTargetPosition(3700);
+                        armObj.setPower(1);
+                        move_forward(0.3, 1050);
+                        sleep(2000);
+                        clawObj.setPosition(.9);
+                        sleep(500);
+                        move_forward(-0.5, 1050);
+                        turn(0.5, 700, "left");
+                        move_forward(.5, 2000);
 
                     } else if (StartPosition == 4) {
                         // Courosel code: drop the duck and park in red box
+                        armObj.setTargetPosition(3700);
+                        armObj.setPower(1);
                         move_forward(-0.4, 700);
+                        strafe(0.5, 400, "left");
 
+                        /*
                         //putting wheel to the carousel
-                        frontLeftDrive.setPower(-0.4);
-                        frontRightDrive.setPower(0.5);
-                        backLeftDrive.setPower(-0.4);
-                        backRightDrive.setPower(-0.4);
+                        frontLeftDrive.setPower(0.5);
+                        frontRightDrive.setPower(-0.2);
+                        backLeftDrive.setPower(-0.2);
+                        backRightDrive.setPower(-0.2);
 
-                        sleep(1000);
+                        sleep(1900);
 
                         frontLeftDrive.setPower(0);
                         frontRightDrive.setPower(0);
                         backLeftDrive.setPower(0);
                         backRightDrive.setPower(0);
+                         */
+
+                        move_forward(-0.2, 1000);
 
                         run_carousel(0.3, 6000);
 
+                        /*
                         //get to wall
                         frontLeftDrive.setPower(-.5);
                         frontRightDrive.setPower(.5);
@@ -402,14 +417,38 @@ public class BasicOpMode_Linear_Autonomous_20211115 extends LinearOpMode {
                         frontRightDrive.setPower(0);
                         backLeftDrive.setPower(0);
                         backRightDrive.setPower(0);
+                         */
+
+                        turn(0.5, 600, "right");
 
                         //move to blue box
-                        frontLeftDrive.setPower(-0.5);
-                        frontRightDrive.setPower(-0.5);
-                        backLeftDrive.setPower(-0.5);
-                        backRightDrive.setPower(-0.5);
+                        frontLeftDrive.setPower(0.5);
+                        frontRightDrive.setPower(0.5);
+                        backLeftDrive.setPower(0.5);
+                        backRightDrive.setPower(0.5);
 
+                        sleep(1100);
+
+                        frontLeftDrive.setPower(0);
+                        frontRightDrive.setPower(0);
+                        backLeftDrive.setPower(0);
+                        backRightDrive.setPower(0);
+
+                        turn(0.5, 600, "left");
+                        move_forward(-.3, 700);
+                        move_forward(.3, 2000);
+                        clawObj.setPosition(.9);
                         sleep(500);
+                        move_forward(-.3, 2500);
+                        strafe(0.5, 1200, "right");
+                        move_forward(.85, 1800);
+
+                        frontLeftDrive.setPower(0.6);
+                        frontRightDrive.setPower(0.8);
+                        backLeftDrive.setPower(0.6);
+                        backRightDrive.setPower(0.8);
+
+                        sleep(1000);
 
                         frontLeftDrive.setPower(0);
                         frontRightDrive.setPower(0);
