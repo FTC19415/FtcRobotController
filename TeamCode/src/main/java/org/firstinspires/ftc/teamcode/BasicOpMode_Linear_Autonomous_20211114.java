@@ -30,6 +30,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -61,7 +62,7 @@ import java.util.List;
  */
 
 @Autonomous(name="Autonomous 14", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class BasicOpMode_Linear_Autonomous_20211114 extends LinearOpMode {
 
     // Declare OpMode members.

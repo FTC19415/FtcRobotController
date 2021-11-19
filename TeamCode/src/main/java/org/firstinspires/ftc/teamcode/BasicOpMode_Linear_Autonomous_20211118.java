@@ -308,7 +308,7 @@ public class BasicOpMode_Linear_Autonomous_20211118 extends LinearOpMode {
 
                         //Putting motor on carousel
                         frontLeftDrive.setPower(-.2);
-                        frontRightDrive.setPower(.2);
+                        frontRightDrive.setPower(.5);
                         backLeftDrive.setPower(-0.2);
                         backRightDrive.setPower(-.2);
 
@@ -353,7 +353,7 @@ public class BasicOpMode_Linear_Autonomous_20211118 extends LinearOpMode {
 
 
                         turn(0.5, 600, "right");
-                        move_forward(-.3, 500);
+                        move_forward(-.3, 800);
                         move_forward(.3, 1900);
                         clawObj.setPosition(.9);
                         sleep(500);
