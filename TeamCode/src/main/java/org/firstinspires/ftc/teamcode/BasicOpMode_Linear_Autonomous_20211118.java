@@ -467,7 +467,7 @@ public class BasicOpMode_Linear_Autonomous_20211118 extends LinearOpMode {
                 telemetry.addData("Status", "Run Time: " + runtime.toString());
                 telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontLeftPower, frontRightPower, backLeftPower, backRightPower);
                 telemetry.update();
-            }
+    }
 
 
 
