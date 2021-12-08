@@ -340,18 +340,21 @@ public class BasicOpMode_Iterative_Drive_211207 extends OpMode
         }
 
         int armPosition = armObj.getCurrentPosition();
-        if (gamepad2.dpad_left) {
+        //if (gamepad2.dpad_left) {
             //Move the wrists to 0.5
-            setWristPosition(gamepad2.right_stick_y * 0.5 + 0.5);
-        }
+          //  setWristPosition(gamepad2.right_stick_y * 0.5 + 0.5);
+       // }
 //        else if ((armPosition > 3700) && (armPosition < 5900)) {
 //            setWristPosition(armPosition * 0.0001345 + 1.1675);
 //        }else if (armPosition < 3700) {
 //            setWristPosition(wristMax);
 //        }
+        if (gamepad2.dpad_left) {
+            setWristPosition(0.683);
+        }
 
         if (gamepad2.dpad_right) {
-            setWristPosition(0.5);
+            setWristPosition(0.485);
         }
 
 
