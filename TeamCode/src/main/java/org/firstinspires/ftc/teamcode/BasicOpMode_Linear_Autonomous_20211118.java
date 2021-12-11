@@ -61,7 +61,7 @@ import java.util.List;
  */
 
 @Autonomous(name="Autonomous 18", group="Linear Opmode")
-@Disabled
+//@Disabled
 public class BasicOpMode_Linear_Autonomous_20211118 extends LinearOpMode {
 
     // Declare OpMode members.
