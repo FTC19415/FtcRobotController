@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -60,9 +59,9 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Autonomous 18", group="Linear Opmode")
-@Disabled
-public class BasicOpMode_Linear_Autonomous_20211118 extends LinearOpMode {
+@Autonomous(name="Autonomous 12/13", group="Linear Opmode")
+//@Disabled
+public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -82,7 +81,13 @@ public class BasicOpMode_Linear_Autonomous_20211118 extends LinearOpMode {
     private DcMotor armObj = null;
     private TouchSensor ArmStop;
     ElapsedTime ElapsedTime2;
+    boolean runAutonomous;
     String AllianceColor = null;
+    boolean autonomousSimplicity;
+    String simpWhereTo = null;
+    boolean wrsDelay;
+    boolean wrsMove;
+    String crsRoute = null;
     int StartPosition = 0;
     //private BNO055IMU imu;
 
@@ -179,53 +184,171 @@ public class BasicOpMode_Linear_Autonomous_20211118 extends LinearOpMode {
        //arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
         // Input starting position and alliance color by usuing the controllers
-        while (!(gamepad1.y)) {
+        while (!(gamepad1.dpad_left)) {
+            if (autonomousSimplicity) {
+                telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
+                telemetry.addData("Autonomous Where to:", simpWhereTo);
+                telemetry.addData("Warehouse Delay:", wrsDelay);
+            }else{
+                telemetry.addData("Alliance Color:", AllianceColor);
+                if (StartPosition == 1 || StartPosition == 3) {
+                    telemetry.addData("Starting Position:", "Warehouse");
+                    telemetry.addData("Warehouse Move:", wrsMove);
+                } else if (StartPosition == 2 || StartPosition == 4) {
+                    telemetry.addData("Starting Position:", "carousel");
+                    telemetry.addData("Carousel Route:", crsRoute);
+                }
+            }
+            telemetry.update();
             while (!(gamepad1.a || gamepad1.b)) {
-                telemetry.addData("To change color to blue press A : ", "To switch color to red press B");
+                telemetry.addData("To run autonomous press A : ", "To do nothing press B");
                 //if A is pressed the color changes to blue, if B pressed the color red
                 if (gamepad1.a) {
                     // Expect values of red or blue. LOWER CASE!
-                    AllianceColor = "blue";
+                    runAutonomous = true;
                 } else if (gamepad1.b) {
                     // Expect values of red or blue. LOWER CASE!
-                    AllianceColor = "red";
+                    runAutonomous = false;
                 }
                 telemetry.update();
             }
-            while (!(gamepad1.dpad_up ||  gamepad1.dpad_down)) {
-                telemetry.addData("To switch starting positions Use the D-Pad:", "Up is warehouse, down is carousel");
-                if (AllianceColor == "red"){
-                    if (gamepad1.dpad_up) {
-                        // red side closest to the warehouse
-                        StartPosition = 1;
-                } else if (gamepad1.dpad_down) {
-                    // red side closest to the carousel
-                    StartPosition = 2;
-                }
-                } else if (AllianceColor == "blue") {
-                     if (gamepad1.dpad_up) {
-                        // blue side closest to the warehouse
-                        StartPosition = 3;
-                    } else if (gamepad1.dpad_down) {
-                        // blue side closest to the carousel
-                        StartPosition = 4;
+            if (runAutonomous) {
+                while (!(gamepad1.x || gamepad1.y)) {
+                    telemetry.addData("To change color to blue press x : ", "To switch color to red press y");
+                    //if A is pressed the color changes to blue, if B pressed the color red
+                    if (gamepad1.x) {
+                        // Expect values of red or blue. LOWER CASE!
+                        AllianceColor = "blue";
+                    } else if (gamepad1.y) {
+                        // Expect values of red or blue. LOWER CASE!
+                        AllianceColor = "red";
                     }
+                    telemetry.update();
                 }
-                telemetry.addData("Alliance Color:", AllianceColor);
+                while (!(gamepad1.a || gamepad1.b)) {
+                    telemetry.addData("To run regular autonomous press A : ", "To run simple autonomous press B");
+                    //if A is pressed the color changes to blue, if B pressed the color red
+                    if (gamepad1.a) {
+                        // Expect values of red or blue. LOWER CASE!
+                        autonomousSimplicity = false;
+                    } else if (gamepad1.b) {
+                        // Expect values of red or blue. LOWER CASE!
+                        autonomousSimplicity = true;
+                    }
+                    telemetry.update();
+                }
+                if (autonomousSimplicity) {
+                    while (!(gamepad1.x || gamepad1.y)) {
+                        telemetry.addData("Go to warehouse press x : ", "Go to Storage Unit press y");
+                        //if A is pressed the color changes to blue, if B pressed the color red
+                        if (gamepad1.x) {
+                            // Expect values of red or blue. LOWER CASE!
+                            simpWhereTo = "warehouse";
+                        } else if (gamepad1.y) {
+                            // Expect values of red or blue. LOWER CASE!
+                            simpWhereTo = "storage unit";
+                        }
+                        telemetry.update();
+                    }
+                    if (simpWhereTo == "warehouse") {
+                        while (!(gamepad1.a || gamepad1.b)) {
+                            telemetry.addData("Need a Delay press A : ", "Don't need a Delay press B");
+                            //if A is pressed the color changes to blue, if B pressed the color red
+                            if (gamepad1.a) {
+                                // Expect values of red or blue. LOWER CASE!
+                                wrsDelay = true;
+                            } else if (gamepad1.b) {
+                                // Expect values of red or blue. LOWER CASE!
+                                wrsDelay = false;
+                            }
+                            telemetry.update();
+                        }
+                    }
+                    if (autonomousSimplicity) {
+                        telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
+                        telemetry.addData("Autonomous Where to:", simpWhereTo);
+                        telemetry.addData("Warehouse Delay:", wrsDelay);
+                    }
+                }else{
+                    while (!(gamepad1.dpad_up || gamepad1.dpad_down)) {
+                        telemetry.addData("To switch starting positions Use the D-Pad:", "Up is warehouse, down is carousel");
+                        if (AllianceColor == "red") {
+                            if (gamepad1.dpad_up) {
+                                // red side closest to the warehouse
+                                StartPosition = 1;
+                            } else if (gamepad1.dpad_down) {
+                                // red side closest to the carousel
+                                StartPosition = 2;
+                            }
+                        } else if (AllianceColor == "blue") {
+                            if (gamepad1.dpad_up) {
+                                // blue side closest to the warehouse
+                                StartPosition = 3;
+                            } else if (gamepad1.dpad_down) {
+                                // blue side closest to the carousel
+                                StartPosition = 4;
+                            }
+                        }
+                        telemetry.addData("Alliance Color:", AllianceColor);
+                        telemetry.update();
+                    }
+                    if (StartPosition == 1 || StartPosition == 3) {
+                        while (!(gamepad1.a || gamepad1.b)) {
+                            telemetry.addData("Move over in warehouse press A : ", "Don't need to move over press B");
+                            //if A is pressed the color changes to blue, if B pressed the color red
+                            if (gamepad1.a) {
+                                // Expect values of red or blue. LOWER CASE!
+                                wrsMove = true;
+                            } else if (gamepad1.b) {
+                                // Expect values of red or blue. LOWER CASE!
+                                wrsMove = false;
+                            }
+                            telemetry.update();
+                        }
+                    }else if (StartPosition == 2 || StartPosition == 4) {
+                        while (!(gamepad1.a || gamepad1.b)) {
+                            telemetry.addData("Use wall for carousel press A : ", "Use barriers press B");
+                            //if A is pressed the color changes to blue, if B pressed the color red
+                            if (gamepad1.a) {
+                                // Expect values of red or blue. LOWER CASE!
+                                crsRoute = "wall";
+                            } else if (gamepad1.b) {
+                                // Expect values of red or blue. LOWER CASE!
+                                crsRoute = "barrier";
+                            }
+                            telemetry.update();
+                        }
+                    }
+                    if (autonomousSimplicity != true) {
+                        telemetry.addData("Alliance Color:", AllianceColor);
+                        if (StartPosition == 1 || StartPosition == 3) {
+                            telemetry.addData("Starting Position:", "Warehouse");
+                            telemetry.addData("Warehouse Move:", wrsMove);
+                        } else if (StartPosition == 2 || StartPosition == 4) {
+                            telemetry.addData("Starting Position:", "carousel");
+                            telemetry.addData("Carousel Route:", crsRoute);
+                        }
+                    }
+                    telemetry.update();
+                }
 
-                if (StartPosition == 1 || StartPosition == 3){
-                    telemetry.addData("Starting Position:", "Warehouse");
-                } else if (StartPosition == 2 || StartPosition == 4){
-                    telemetry.addData("Starting Position:", "carousel");
-                }
-                telemetry.update();
+            }else{
+                telemetry.addData("Run Autonomous:", runAutonomous);
             }
-            telemetry.addData("Alliance Color:", AllianceColor);
 
-            if (StartPosition == 1 || StartPosition == 3){
-                telemetry.addData("Starting Position:", "Warehouse");
-            } else if (StartPosition == 2 || StartPosition == 4){
-                telemetry.addData("Starting Position:", "carousel");
+            if (autonomousSimplicity) {
+                telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
+                telemetry.addData("Autonomous Where to:", simpWhereTo);
+                telemetry.addData("Warehouse Delay:", wrsDelay);
+            }else{
+                telemetry.addData("Alliance Color:", AllianceColor);
+                if (StartPosition == 1 || StartPosition == 3) {
+                    telemetry.addData("Starting Position:", "Warehouse");
+                    telemetry.addData("Warehouse Move:", wrsMove);
+                } else if (StartPosition == 2 || StartPosition == 4) {
+                    telemetry.addData("Starting Position:", "carousel");
+                    telemetry.addData("Carousel Route:", crsRoute);
+                }
             }
             telemetry.update();
         }
@@ -276,6 +399,20 @@ public class BasicOpMode_Linear_Autonomous_20211118 extends LinearOpMode {
                       telemetry.update();
                     }
                 }
+        if (autonomousSimplicity == true) {
+            telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
+            telemetry.addData("Autonomous Where to:", simpWhereTo);
+            telemetry.addData("Warehouse Delay:", wrsDelay);
+        }else if (autonomousSimplicity == false) {
+            telemetry.addData("Alliance Color:", AllianceColor);
+            if (StartPosition == 1 || StartPosition == 3) {
+                telemetry.addData("Starting Position:", "Warehouse");
+                telemetry.addData("Warehouse Move:", wrsMove);
+            } else if (StartPosition == 2 || StartPosition == 4) {
+                telemetry.addData("Starting Position:", "carousel");
+                telemetry.addData("Carousel Route:", crsRoute);
+            }
+        }
         telemetry.addData("Status", "Initialized");
         telemetry.update();
             // Wait for the game to start (driver presses PLAY)
@@ -293,12 +430,13 @@ public class BasicOpMode_Linear_Autonomous_20211118 extends LinearOpMode {
                         turn(0.5, 600, "left");
                         armObj.setTargetPosition(3700);
                         armObj.setPower(1);
-                        move_forward(0.3, 1050);
+                        move_forward(-0.3, 500);
+                        move_forward(0.3, 1100);
                         sleep(2000);
                         clawObj.setPosition(.9);
                         sleep(500);
                         move_forward(-0.5, 1050);
-                        turn(0.5, 700, "right");
+                        turn(0.5, 650, "right");
                         move_forward(.5, 2000);
 
                     } else if (StartPosition == 2) {
@@ -371,6 +509,7 @@ public class BasicOpMode_Linear_Autonomous_20211118 extends LinearOpMode {
                         turn(0.5, 550, "right");
                         armObj.setTargetPosition(3700);
                         armObj.setPower(1);
+                        move_forward(-0.3, 500);
                         move_forward(0.3, 1050);
                         sleep(2000);
                         clawObj.setPosition(.9);
@@ -437,19 +576,25 @@ public class BasicOpMode_Linear_Autonomous_20211118 extends LinearOpMode {
 
                         turn(0.5, 600, "left");
                         move_forward(-.3, 700);
-                        move_forward(.3, 2000);
+                        move_forward(.3, 2150);
                         clawObj.setPosition(.9);
                         sleep(500);
                         move_forward(-.3, 2500);
-                        strafe(0.5, 1200, "right");
-                        move_forward(.85, 1800);
+                        strafe(0.5, 1100, "right");
 
-                        frontLeftDrive.setPower(0.6);
+                        frontLeftDrive.setPower(0.7);
                         frontRightDrive.setPower(0.8);
-                        backLeftDrive.setPower(0.6);
+                        backLeftDrive.setPower(0.7);
                         backRightDrive.setPower(0.8);
 
                         sleep(1000);
+
+                        frontLeftDrive.setPower(1);
+                        frontRightDrive.setPower(0.8);
+                        backLeftDrive.setPower(1);
+                        backRightDrive.setPower(0.8);
+
+                        sleep(1800);
 
                         frontLeftDrive.setPower(0);
                         frontRightDrive.setPower(0);
