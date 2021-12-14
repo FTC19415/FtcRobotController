@@ -59,7 +59,7 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Autonomous 12/13", group="Linear Opmode")
+@Autonomous(name="DEV Autonomous 12/13", group="Linear Opmode")
 //@Disabled
 public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
 
@@ -90,6 +90,7 @@ public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
     String crsRoute = null;
     int StartPosition = 0;
     //private BNO055IMU imu;
+    List<Recognition> recognitions;
 
     private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
     private static final String[] LABELS = {
@@ -399,6 +400,8 @@ public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
                       telemetry.update();
                     }
                 }
+
+        recognitions = tfodFreightFrenzy.getRecognitions();
         if (autonomousSimplicity == true) {
             telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
             telemetry.addData("Autonomous Where to:", simpWhereTo);
@@ -413,6 +416,9 @@ public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
                 telemetry.addData("Carousel Route:", crsRoute);
             }
         }
+
+
+        telemetry.addData(telemetry.addData(recognitions.getLabel);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
             // Wait for the game to start (driver presses PLAY)
@@ -786,6 +792,11 @@ public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
         tfodParameters.inputSize = 320;
         tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
+    }
+
+    private void DisplayInfo() {
+        recognitions = tfodFreightFrenzy.getRecognitions();
+        telemetry.addData("label" + i, recognitions.getLabel());
     }
 
     /*private void move_forward(double fwrdSpeed, int fwrdTime) {
