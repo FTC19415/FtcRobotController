@@ -362,6 +362,7 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
         if (AllianceColor == "red") {
             if (autonomousSimplicity) {
                 if (simpWhereTo == "warehouse") {
+                    autonomousSelection =
 
                 }else if (simpWhereTo == "storage unit") {
 
