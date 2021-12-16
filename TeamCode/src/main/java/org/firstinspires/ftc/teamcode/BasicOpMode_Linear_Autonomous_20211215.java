@@ -195,7 +195,7 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                 telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
                 telemetry.addData("Autonomous Where to:", simpWhereTo);
                 telemetry.addData("Warehouse Delay:", wrsDelay);
-            }else{
+            } else {
                 telemetry.addData("Alliance Color:", AllianceColor);
                 if (StartPosition == 1 || StartPosition == 3) {
                     telemetry.addData("Starting Position:", "Warehouse");
@@ -275,7 +275,7 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                         telemetry.addData("Autonomous Where to:", simpWhereTo);
                         telemetry.addData("Warehouse Delay:", wrsDelay);
                     }
-                }else{
+                } else {
                     while (!(gamepad1.dpad_up || gamepad1.dpad_down)) {
                         telemetry.addData("To switch starting positions Use the D-Pad:", "Up is warehouse, down is carousel");
                         if (AllianceColor == "red") {
@@ -311,7 +311,7 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                             }
                             telemetry.update();
                         }
-                    }else if (StartPosition == 2 || StartPosition == 4) {
+                    } else if (StartPosition == 2 || StartPosition == 4) {
                         while (!(gamepad1.a || gamepad1.b)) {
                             telemetry.addData("Use wall for carousel press A : ", "Use barriers press B");
                             //if A is pressed the color changes to blue, if B pressed the color red
@@ -338,7 +338,7 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                     telemetry.update();
                 }
 
-            }else{
+            } else {
                 telemetry.addData("Run Autonomous:", runAutonomous);
             }
 
@@ -346,7 +346,7 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                 telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
                 telemetry.addData("Autonomous Where to:", simpWhereTo);
                 telemetry.addData("Warehouse Delay:", wrsDelay);
-            }else{
+            } else {
                 telemetry.addData("Alliance Color:", AllianceColor);
                 if (StartPosition == 1 || StartPosition == 3) {
                     telemetry.addData("Starting Position:", "Warehouse");
@@ -359,25 +359,53 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
             telemetry.update();
         }
 
+
+
         if (AllianceColor == "red") {
             if (autonomousSimplicity) {
                 if (simpWhereTo == "warehouse") {
-                    autonomousSelection =
-
+                    autonomousSelection = 5;
+                    if (wrsDelay) {
+                        autonomousSelection = 6;
+                    }
                 }else if (simpWhereTo == "storage unit") {
-
+                    autonomousSelection = 7;
                 }
             }
             if (StartPosition == 1 || StartPosition == 3) {
-
+                if (wrsMove) {
+                    autonomousSelection = 2;
+                }
+                autonomousSelection = 1;
             }else if (StartPosition == 2 || StartPosition == 4) {
-
+                if (crsRoute == "barrier") {
+                    autonomousSelection = 3;
+                }else{
+                    autonomousSelection = 4;
+                }
             }
         }else if (AllianceColor == "blue") {
+            if (autonomousSimplicity) {
+                if (simpWhereTo == "warehouse") {
+                    autonomousSelection = 12;
+                    if (wrsDelay) {
+                        autonomousSelection = 13;
+                    }
+                }else if (simpWhereTo == "storage unit") {
+                    autonomousSelection = 14;
+                }
+            }
             if (StartPosition == 1 || StartPosition == 3) {
-
+                if (wrsMove) {
+                    autonomousSelection = 9;
+                }
+                autonomousSelection = 8;
             }else if (StartPosition == 2 || StartPosition == 4) {
-
+                if (crsRoute == "barrier") {
+                    autonomousSelection = 10;
+                }else{
+                    autonomousSelection = 11;
+                }
             }
         }
 
@@ -467,6 +495,8 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                 if (AllianceColor == "red") {
                     strafe(.5, 100, "right");
                     findElement();
+                    sleep(1000);
+                    strafe(.5, 100, "left");
                     if (StartPosition == 1) {
                         //Warehouse Code that drives into the warehouse
                         turn(0.5, 600, "left");
@@ -548,6 +578,8 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                 if (AllianceColor == "blue") {
                     strafe(.5, 100, "left");
                     findElement();
+                    sleep(1000);
+                    strafe(.5, 100, "right");
                     if (StartPosition == 3) {
                         //Warehouse Code: Drive into the warehouse
                         turn(0.5, 550, "right");
