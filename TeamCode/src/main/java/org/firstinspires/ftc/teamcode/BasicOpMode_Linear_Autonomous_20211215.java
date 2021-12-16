@@ -30,7 +30,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -60,9 +59,9 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="DEV Autonomous 12/13", group="Linear Opmode")
-@Disabled
-public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
+@Autonomous(name="DEV Autonomous 12/15", group="Linear Opmode")
+//@Disabled
+public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
 
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -90,6 +89,11 @@ public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
     boolean wrsMove;
     String crsRoute = null;
     int StartPosition = 0;
+    String whatIsDetected = null;
+    double elementPosition;
+    int elementDropLevel;
+    int elementDropLevelDegrees;
+    int autonomousSelection;
     //private BNO055IMU imu;
     List<Recognition> recognitions;
 
@@ -185,7 +189,7 @@ public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
         //arm.setTargetPosition(0);
        //arm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        // Input starting position and alliance color by usuing the controllers
+        // Input starting position and alliance color by using the controllers
         while (!(gamepad1.dpad_left)) {
             if (autonomousSimplicity) {
                 telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
@@ -355,6 +359,26 @@ public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
             telemetry.update();
         }
 
+        if (AllianceColor == "red") {
+            if (autonomousSimplicity) {
+                if (simpWhereTo == "warehouse") {
+
+                }else if (simpWhereTo == "storage unit") {
+
+                }
+            }
+            if (StartPosition == 1 || StartPosition == 3) {
+
+            }else if (StartPosition == 2 || StartPosition == 4) {
+
+            }
+        }else if (AllianceColor == "blue") {
+            if (StartPosition == 1 || StartPosition == 3) {
+
+            }else if (StartPosition == 2 || StartPosition == 4) {
+
+            }
+        }
 
 
 
@@ -362,47 +386,50 @@ public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
 
         clawObj.setPosition(.7);
 
-        //initializing parameters
-        /*IMU_Parameters = new BNO055IMU.Parameters();
-        IMU_Parameters.mode = BNO055IMU.SensorMode.IMU;
-        imu.initialize(IMU_Parameters);
-        telemetry.addData("Status", "IMU initialized, calibration started");
-        telemetry.update();
-        sleep(1000);
-        while (!IMU_Calibrated()) {
-            telemetry.addData("If Calibration", "doesn't complete after 3 seconds, move through 9");
-            telemetry.update();
-            sleep(1000);
-            */
-        if (tfod != null) {
-                    // getUpdatedRecognitions() will return null if no new information is available since
-                    // the last time that call was made.
-                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-                    if (updatedRecognitions != null) {
-                      telemetry.addData("# Object Detected", updatedRecognitions.size());
 
-                      // step through the list of recognitions and display boundary info.
-                      int i = 0;
-                      for (Recognition recognition : updatedRecognitions) {
-                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                                          recognition.getLeft(), recognition.getTop());
-                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                                recognition.getRight(), recognition.getBottom());
-                        i++;
-                      }
-                        telemetry.addData("Alliance Color:", AllianceColor);
+//        if (tfod != null) {
+//                    // getUpdatedRecognitions() will return null if no new information is available since
+//                    // the last time that call was made.
+//                    List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+//                    if (updatedRecognitions != null) {
+//                      telemetry.addData("# Object Detected", updatedRecognitions.size());
+//
+//                      // step through the list of recognitions and display boundary info.
+//                      int i = 0;
+//                      for (Recognition recognition : updatedRecognitions) {
+//                        telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+//                        telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+//                                          recognition.getLeft(), recognition.getTop());
+//                        telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+//                                recognition.getRight(), recognition.getBottom());
+//                        i++;
+//
+//                          // check label to see if the camera now sees a Cube
+//                          if (recognition.getLabel().equals("Cube")) {
+//                              whatIsDetected = "Cube";
+//                              telemetry.addData("Object Detected", whatIsDetected);
+//                              elementPosition = recognition.getLeft();
+//                          } else if (recognition.getLabel().equals("Marker")) {
+//                              whatIsDetected = "Marker";
+//                              telemetry.addData("Object Detected", whatIsDetected);
+//                              elementPosition = recognition.getLeft();
+//                          }
+//                      }
+//                      telemetry.update();
+//                    }
+//                }
+//
+//        if (whatIsDetected == "Cube") {
+//            if (elementPosition >= 500) {
+//                //right most spot
+//                elementDropLevel = 1;
+//            }else if (elementPosition >= 200 && elementPosition <= 475) {
+//                elementDropLevel = 2;
+//            }
+//        }else if (whatIsDetected == "Marker") {
+//            elementDropLevel = 3;
+//        }
 
-                        if (StartPosition == 1 || StartPosition == 3){
-                            telemetry.addData("Starting Position:", "Warehouse");
-                        } else if (StartPosition == 2 || StartPosition == 4){
-                            telemetry.addData("Starting Position:", "carousel");
-                        }
-                      telemetry.update();
-                    }
-                }
-
-        //recognitions = tfodFreightFrenzy.getRecognitions();
         if (autonomousSimplicity == true) {
             telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
             telemetry.addData("Autonomous Where to:", simpWhereTo);
@@ -416,12 +443,17 @@ public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
                 telemetry.addData("Starting Position:", "carousel");
                 telemetry.addData("Carousel Route:", crsRoute);
             }
+                telemetry.addData("Object Detected", whatIsDetected);
+
         }
 
 
         //telemetry.addData(telemetry.addData(recognitions.getLabel);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+
+
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
             runtime.reset();
@@ -432,6 +464,8 @@ public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
 
 
                 if (AllianceColor == "red") {
+                    strafe(.5, 100, "right");
+                    findElement();
                     if (StartPosition == 1) {
                         //Warehouse Code that drives into the warehouse
                         turn(0.5, 600, "left");
@@ -511,6 +545,8 @@ public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
                     }
                 }
                 if (AllianceColor == "blue") {
+                    strafe(.5, 100, "left");
+                    findElement();
                     if (StartPosition == 3) {
                         //Warehouse Code: Drive into the warehouse
                         turn(0.5, 550, "right");
@@ -795,9 +831,63 @@ public class BasicOpMode_Linear_Autonomous_20211213 extends LinearOpMode {
         tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
     }
 
-    private void DisplayInfo() {
-        //recognitions = tfodFreightFrenzy.getRecognitions();
-       // telemetry.addData("label" + i, recognitions.getLabel());
+    private void findElement() {
+        if (tfod != null) {
+            // getUpdatedRecognitions() will return null if no new information is available since
+            // the last time that call was made.
+            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
+            if (updatedRecognitions != null) {
+                telemetry.addData("# Object Detected", updatedRecognitions.size());
+
+                // step through the list of recognitions and display boundary info.
+                int i = 0;
+                for (Recognition recognition : updatedRecognitions) {
+                    telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
+                    telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
+                            recognition.getLeft(), recognition.getTop());
+                    telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
+                            recognition.getRight(), recognition.getBottom());
+                    i++;
+
+                    // check label to see if the camera now sees a Cube
+                    if (recognition.getLabel().equals("Cube")) {
+                        whatIsDetected = "Cube";
+                        telemetry.addData("Object Detected", whatIsDetected);
+                        elementPosition = recognition.getLeft();
+                    } else if (recognition.getLabel().equals("Marker")) {
+                        whatIsDetected = "Marker";
+                        telemetry.addData("Object Detected", whatIsDetected);
+                        elementPosition = recognition.getLeft();
+                    }
+                }
+                telemetry.update();
+            }
+        }
+
+        if (whatIsDetected == "Cube") {
+            if (elementPosition >= 500) {
+                //right most spot
+                elementDropLevel = 1;
+            }else if (elementPosition >= 200 && elementPosition <= 475) {
+                elementDropLevel = 2;
+            }
+        }else if (whatIsDetected == "Marker") {
+            elementDropLevel = 3;
+        }
+
+        if (elementDropLevel == 1) {
+
+            elementDropLevelDegrees = 3700;
+
+        }else if (elementDropLevel == 2) {
+
+            elementDropLevelDegrees = 4700;
+
+        }else if (elementDropLevel == 3){
+
+            elementDropLevelDegrees = 5700;
+
+        }
     }
 
     /*private void move_forward(double fwrdSpeed, int fwrdTime) {
