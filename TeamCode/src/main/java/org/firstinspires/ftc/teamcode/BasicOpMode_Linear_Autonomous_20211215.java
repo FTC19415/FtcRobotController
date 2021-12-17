@@ -229,6 +229,7 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                         // Expect values of red or blue. LOWER CASE!
                         AllianceColor = "red";
                     }
+                    telemetry.addData("Alliance Color:", AllianceColor);
                     telemetry.update();
                 }
                 while (!(gamepad1.a || gamepad1.b)) {
@@ -241,6 +242,10 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                         // Expect values of red or blue. LOWER CASE!
                         autonomousSimplicity = true;
                     }
+                    telemetry.addData("Alliance Color:", AllianceColor);
+                    telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
+                    telemetry.addData("Autonomous Where to:", simpWhereTo);
+                    telemetry.addData("Warehouse Delay:", wrsDelay);
                     telemetry.update();
                 }
                 if (autonomousSimplicity) {
@@ -254,6 +259,10 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                             // Expect values of red or blue. LOWER CASE!
                             simpWhereTo = "storage unit";
                         }
+                        telemetry.addData("Alliance Color:", AllianceColor);
+                        telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
+                        telemetry.addData("Autonomous Where to:", simpWhereTo);
+                        telemetry.addData("Warehouse Delay:", wrsDelay);
                         telemetry.update();
                     }
                     if (simpWhereTo == "warehouse") {
@@ -267,6 +276,10 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                                 // Expect values of red or blue. LOWER CASE!
                                 wrsDelay = false;
                             }
+                            telemetry.addData("Alliance Color:", AllianceColor);
+                            telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
+                            telemetry.addData("Autonomous Where to:", simpWhereTo);
+                            telemetry.addData("Warehouse Delay:", wrsDelay);
                             telemetry.update();
                         }
                     }
@@ -296,6 +309,13 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                             }
                         }
                         telemetry.addData("Alliance Color:", AllianceColor);
+                        if (StartPosition == 1 || StartPosition == 3) {
+                            telemetry.addData("Starting Position:", "Warehouse");
+                            telemetry.addData("Warehouse Move:", wrsMove);
+                        } else if (StartPosition == 2 || StartPosition == 4) {
+                            telemetry.addData("Starting Position:", "carousel");
+                            telemetry.addData("Carousel Route:", crsRoute);
+                        }
                         telemetry.update();
                     }
                     if (StartPosition == 1 || StartPosition == 3) {
@@ -309,6 +329,14 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                                 // Expect values of red or blue. LOWER CASE!
                                 wrsMove = false;
                             }
+                            telemetry.addData("Alliance Color:", AllianceColor);
+                            if (StartPosition == 1 || StartPosition == 3) {
+                                telemetry.addData("Starting Position:", "Warehouse");
+                                telemetry.addData("Warehouse Move:", wrsMove);
+                            } else if (StartPosition == 2 || StartPosition == 4) {
+                                telemetry.addData("Starting Position:", "carousel");
+                                telemetry.addData("Carousel Route:", crsRoute);
+                            }
                             telemetry.update();
                         }
                     } else if (StartPosition == 2 || StartPosition == 4) {
@@ -321,6 +349,14 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                             } else if (gamepad1.b) {
                                 // Expect values of red or blue. LOWER CASE!
                                 crsRoute = "barrier";
+                            }
+                            telemetry.addData("Alliance Color:", AllianceColor);
+                            if (StartPosition == 1 || StartPosition == 3) {
+                                telemetry.addData("Starting Position:", "Warehouse");
+                                telemetry.addData("Warehouse Move:", wrsMove);
+                            } else if (StartPosition == 2 || StartPosition == 4) {
+                                telemetry.addData("Starting Position:", "carousel");
+                                telemetry.addData("Carousel Route:", crsRoute);
                             }
                             telemetry.update();
                         }
@@ -493,12 +529,27 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
 
 
                 if (AllianceColor == "red") {
-                    strafe(.5, 100, "right");
+                    strafe(.5, 500, "right");
                     findElement();
-                    sleep(1000);
-                    strafe(.5, 100, "left");
-                    if (StartPosition == 1) {
+                    sleep(5000);
+                    strafe(.5, 600, "left");
+                    if (autonomousSimplicity) {
+                        if (simpWhereTo == "warehouse") {
+                            if (wrsDelay) {
+                                sleep(6000);
+                                move_forward(1, 400);
+                            }
+                            move_forward(1, 700);
+                        } else if (simpWhereTo == "storage unit") {
+                            strafe(.5, 500, "right");
+                            move_forward(-.5, 1000);
+                            turn(.5, 500, "right");
+                            move_forward(-.5, 400);
+
+                        }
+                    }else  if (StartPosition == 1) {
                         //Warehouse Code that drives into the warehouse
+                        move_forward(-.5, 600);
                         turn(0.5, 600, "left");
                         armObj.setTargetPosition(3700);
                         armObj.setPower(1);
@@ -510,6 +561,10 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                         move_forward(-0.5, 1050);
                         turn(0.5, 650, "right");
                         move_forward(.5, 2000);
+
+                        if (wrsMove) {
+                            strafe(.5, 200, "left");
+                        }
 
                     } else if (StartPosition == 2) {
                         // Carousel code that drives to the carousel and goes into the red box
@@ -570,18 +625,40 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                         sleep(500);
                         move_forward(-.3, 2500);
                         strafe(0.5, 650, "left");
-                        move_forward(1, 1950);
 
+                        if (crsRoute == "barrier") {
+                            move_forward(1, 1950);
+                        }
+
+                        move_forward(.5, 300);
+                        strafe(.5, 1300, "left");
+                        move_forward(1, 1300);
 
                     }
+
                 }
                 if (AllianceColor == "blue") {
-                    strafe(.5, 100, "left");
+                    strafe(.5, 500, "left");
                     findElement();
-                    sleep(1000);
-                    strafe(.5, 100, "right");
-                    if (StartPosition == 3) {
+                    sleep(5000);
+                    strafe(.5, 600, "right");
+                    if (autonomousSimplicity) {
+                        if (simpWhereTo == "warehouse") {
+                            if (wrsDelay) {
+                                sleep(6000);
+                                move_forward(1, 400);
+                            }
+                            move_forward(1, 700);
+                        }else if (simpWhereTo == "storage unit") {
+                            strafe(.5, 500, "left");
+                            move_forward(-.5, 1000);
+                            turn(.5, 500, "left");
+                            move_forward(-.3, 400);
+
+                        }
+                    }else if (StartPosition == 3) {
                         //Warehouse Code: Drive into the warehouse
+                        move_forward(-.5, 600);
                         turn(0.5, 550, "right");
                         armObj.setTargetPosition(3700);
                         armObj.setPower(1);
@@ -593,6 +670,10 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                         move_forward(-0.5, 1050);
                         turn(0.5, 700, "left");
                         move_forward(.5, 2000);
+
+                        if (wrsMove) {
+                            strafe(.5, 200, "right");
+                        }
 
                     } else if (StartPosition == 4) {
                         // Courosel code: drop the duck and park in red box
@@ -658,25 +739,16 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                         move_forward(-.3, 2500);
                         strafe(0.5, 1100, "right");
 
-                        frontLeftDrive.setPower(0.7);
-                        frontRightDrive.setPower(0.8);
-                        backLeftDrive.setPower(0.7);
-                        backRightDrive.setPower(0.8);
+                        if (crsRoute == "barrier") {
+                            move_forward(1, 1950);
+                        }
 
-                        sleep(1000);
+                        move_forward(.5, 300);
+                        strafe(.5, 1300, "right");
+                        move_forward(1, 1300);
 
-                        frontLeftDrive.setPower(1);
-                        frontRightDrive.setPower(0.8);
-                        backLeftDrive.setPower(1);
-                        backRightDrive.setPower(0.8);
-
-                        sleep(1800);
-
-                        frontLeftDrive.setPower(0);
-                        frontRightDrive.setPower(0);
-                        backLeftDrive.setPower(0);
-                        backRightDrive.setPower(0);
                     }
+
                 }
 
         while (!ArmStop.isPressed()) {
@@ -898,10 +970,10 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
         }
 
         if (whatIsDetected == "Cube") {
-            if (elementPosition >= 500) {
+            if (elementPosition >= 600) {
                 //right most spot
                 elementDropLevel = 1;
-            }else if (elementPosition >= 200 && elementPosition <= 475) {
+            }else if (elementPosition >= 200 && elementPosition <= 575) {
                 elementDropLevel = 2;
             }
         }else if (whatIsDetected == "Marker") {

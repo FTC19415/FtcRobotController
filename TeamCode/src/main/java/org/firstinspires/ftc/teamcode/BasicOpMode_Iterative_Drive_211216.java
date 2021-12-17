@@ -49,9 +49,9 @@ import com.qualcomm.robotcore.util.Range;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@TeleOp(name="Mechanum Drive 12/15 (Wrist)", group="Iterative Opmode")
+@TeleOp(name="Mechanum Drive 12/16", group="Iterative Opmode")
 //@Disabled
-public class BasicOpMode_Iterative_Drive_211215 extends OpMode
+public class BasicOpMode_Iterative_Drive_211216 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -63,13 +63,9 @@ public class BasicOpMode_Iterative_Drive_211215 extends OpMode
     private DcMotor armObj = null;
     private DcMotor LinearArmObj = null;
     private Servo clawObj = null;
-    private Servo wristLPos = null;
-    private Servo wristRNeg = null;
     private TouchSensor ArmStop;
     private boolean isArmButtonPressed = true;
-    double dblWristPosition;
-    private double wristMax = 0.858;
-    private double wristMin = 0.204;
+
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -77,8 +73,6 @@ public class BasicOpMode_Iterative_Drive_211215 extends OpMode
     @Override
     public void init() {
         telemetry.addData("Status", "Initialized");
-
-        dblWristPosition = 0.5;
 
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
@@ -92,9 +86,6 @@ public class BasicOpMode_Iterative_Drive_211215 extends OpMode
         clawObj = hardwareMap.get(Servo.class, "Claw");
         LinearArmObj = hardwareMap.get(DcMotor.class, "LinearArm");
         ArmStop = hardwareMap.get(TouchSensor.class, "ArmStop");
-        wristLPos = hardwareMap.get(Servo.class, "LeftWrist");
-        wristRNeg = hardwareMap.get(Servo.class, "RightWrist");
-
 
         LinearArmObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LinearArmObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -150,8 +141,6 @@ public class BasicOpMode_Iterative_Drive_211215 extends OpMode
         double fltStrafe;
         double fltPivot;
         double fltArm;
-        double fltWrists;
-        double wristMath;
         int intArmPosition;
         int intArmPositionPick;
         int intArmPositionDropMid;
@@ -174,8 +163,7 @@ public class BasicOpMode_Iterative_Drive_211215 extends OpMode
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
         double up = gamepad2.left_stick_y;
-        double down = -gamepad2.left_stick_y;
-        double move = gamepad2.right_stick_y;
+        double down = -gamepad2.right_stick_y;
         YTimer = 0;
         YTimerTwo = 0;
 
@@ -188,20 +176,25 @@ public class BasicOpMode_Iterative_Drive_211215 extends OpMode
         double armPowerDown = Range.clip(down, -.7, -.05);
         double armPowerUp = Range.clip(up, .05, .7);
 
-        //double wrists = Range.clip(move, )
-
-//        wristMath = (gamepad2.right_stick_y * 0.5 + 0.5);
-
-        //noinspection UnusedAssignment
+        if  (gamepad1.left_stick_y < 0) {
+            fltForward = -(gamepad1.left_stick_y * gamepad1.left_stick_y);
+        }else if (gamepad1.left_stick_y > 0) {
+            fltForward = (gamepad1.left_stick_y * gamepad1.left_stick_y);
+        }
         fltForward = -gamepad1.left_stick_y;
         fltStrafe = gamepad1.left_stick_x;
         fltPivot = gamepad1.right_stick_x;
 
         fltArm = -gamepad2.left_stick_y;
 
-        //fltWrists = wristMath;
-
-
+        // crazy Shayne code
+        int isPositive = -1;
+        if(fltArm > 0.0)
+        {
+            isPositive = 1;
+        }
+        fltArm = isPositive * (fltArm * fltArm);
+        // end crazy Shayne code
 
         //This controls ALL arm movement
         if (gamepad2.left_stick_y <= 1 && gamepad2.left_stick_y > 0.05) {
@@ -254,7 +247,6 @@ public class BasicOpMode_Iterative_Drive_211215 extends OpMode
 
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }else if (gamepad2.x) {
-            setWristPosition(0.858);
             armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             while (!ArmStop.isPressed()) {
                 LinearArmObj.setTargetPosition(0);
@@ -336,32 +328,6 @@ public class BasicOpMode_Iterative_Drive_211215 extends OpMode
             clawObj.setPosition(.9);
         }
 
-        int armPosition = armObj.getCurrentPosition();
-        //if (gamepad2.dpad_left) {
-            //Move the wrists to 0.5
-          //  setWristPosition(gamepad2.right_stick_y * 0.5 + 0.5);
-       // }
-//        else if ((armPosition > 3700) && (armPosition < 5900)) {
-//            setWristPosition(armPosition * 0.0001345 + 1.1675);
-//        }else if (armPosition < 3700) {
-//            setWristPosition(wristMax);
-//        }
-
-        if ((armPosition > 3700) && (armPosition < 5900)) {
-            setWristPosition(armPosition * 0.0001345 + 1.1675);
-        }else if (armPosition < 3700) {
-            setWristPosition(wristMax);
-        }
-//        if (gamepad2.dpad_left) {
-//            setWristPosition(0.683);
-//        }
-//
-//        if (gamepad2.dpad_right) {
-//            setWristPosition(0.485);
-//        }
-
-
-
         //Linear Arm movement
         if (gamepad2.dpad_up) {
             //Extend
@@ -422,9 +388,7 @@ public class BasicOpMode_Iterative_Drive_211215 extends OpMode
         telemetry.addData("Linear Arm position:", LinearArmObj.getCurrentPosition());
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Is Arm Stop pressed:", ArmStop.isPressed());
-        telemetry.addData("Arm Position:", armPosition);
-        telemetry.addData("Wrist L Position:", wristLPos.getPosition());
-        telemetry.addData("Wrist R Position:", wristRNeg.getPosition());
+        telemetry.addData("Arm Position:", armObj.getCurrentPosition());
         telemetry.addData("Was Arm button last action?:", isArmButtonPressed);
         telemetry.addData("Stick Movement:", gamepad2.left_stick_y);
         telemetry.addData("Motors", "left (%.2f), right (%.2f)", frontLeftPower, frontRightPower, backLeftPower, backRightPower);
@@ -436,17 +400,5 @@ public class BasicOpMode_Iterative_Drive_211215 extends OpMode
     @Override
     public void stop() {
     }
-    private void setWristPosition(double inputPosition) {
 
-        double position = .5;
-        if (inputPosition <= wristMax && inputPosition >= wristMin) {
-            position = inputPosition;
-        }else if (inputPosition > wristMax){
-            position = wristMax;
-        }else if (inputPosition < wristMin){
-            position = wristMin;
-        }
-        wristLPos.setPosition(position);
-        wristRNeg.setPosition(((position - 0.5) - 0.5) * (-1));
-    }
 }
