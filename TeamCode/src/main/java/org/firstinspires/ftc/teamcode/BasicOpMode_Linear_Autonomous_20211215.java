@@ -551,7 +551,7 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                         //Warehouse Code that drives into the warehouse
                         move_forward(-.5, 600);
                         turn(0.5, 600, "left");
-                        armObj.setTargetPosition(3700);
+                        armObj.setTargetPosition(elementDropLevel);
                         armObj.setPower(1);
                         move_forward(-0.3, 500);
                         move_forward(0.3, 1100);
@@ -568,7 +568,7 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
 
                     } else if (StartPosition == 2) {
                         // Carousel code that drives to the carousel and goes into the red box
-                        armObj.setTargetPosition(3700);
+                        armObj.setTargetPosition(elementDropLevel);
                         armObj.setPower(1);
                         move_forward(-0.4, 700);
 
@@ -628,11 +628,12 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
 
                         if (crsRoute == "barrier") {
                             move_forward(1, 1950);
-                        }
+                        }else {
 
-                        move_forward(.5, 300);
-                        strafe(.5, 1300, "left");
-                        move_forward(1, 1300);
+                            move_forward(.5, 300);
+                            strafe(.5, 1300, "left");
+                            move_forward(1, 1300);
+                        }
 
                     }
 
@@ -660,7 +661,7 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
                         //Warehouse Code: Drive into the warehouse
                         move_forward(-.5, 600);
                         turn(0.5, 550, "right");
-                        armObj.setTargetPosition(3700);
+                        armObj.setTargetPosition(elementDropLevel);
                         armObj.setPower(1);
                         move_forward(-0.3, 500);
                         move_forward(0.3, 1050);
@@ -677,7 +678,7 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
 
                     } else if (StartPosition == 4) {
                         // Courosel code: drop the duck and park in red box
-                        armObj.setTargetPosition(3700);
+                        armObj.setTargetPosition(elementDropLevel);
                         armObj.setPower(1);
                         move_forward(-0.4, 700);
                         strafe(0.5, 400, "left");
@@ -741,11 +742,13 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
 
                         if (crsRoute == "barrier") {
                             move_forward(1, 1950);
+                        }else {
+
+                            move_forward(.5, 300);
+                            strafe(.5, 1300, "right");
+                            move_forward(1, 1300);
                         }
 
-                        move_forward(.5, 300);
-                        strafe(.5, 1300, "right");
-                        move_forward(1, 1300);
 
                     }
 
@@ -992,7 +995,10 @@ public class BasicOpMode_Linear_Autonomous_20211215 extends LinearOpMode {
 
             elementDropLevelDegrees = 5700;
 
+        }else{
+            elementDropLevel = 3700;
         }
+
     }
 
     /*private void move_forward(double fwrdSpeed, int fwrdTime) {
