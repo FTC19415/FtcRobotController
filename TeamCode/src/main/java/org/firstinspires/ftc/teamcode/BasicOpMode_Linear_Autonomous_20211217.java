@@ -1117,7 +1117,7 @@ public class BasicOpMode_Linear_Autonomous_20211217 extends LinearOpMode {
 
         }else if (elementDropLevel == 3){
 
-            elementDropLevelDegrees = 5700;
+            elementDropLevelDegrees = 5600;
 
         }else{
             elementDropLevelDegrees = 3700;
