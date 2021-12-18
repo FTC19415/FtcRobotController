@@ -848,7 +848,7 @@ public class BasicOpMode_Linear_Autonomous_20211217 extends LinearOpMode {
                         if (crsRoute == "barrier") {
                             move_forward(1, 1950);
                         }else {
-                            move_forward(.7, 300);
+                            move_forward(.7, 400);
                             strafe(.7, 1500, "right");
                             move_forward(.75, 1700);
                         }
