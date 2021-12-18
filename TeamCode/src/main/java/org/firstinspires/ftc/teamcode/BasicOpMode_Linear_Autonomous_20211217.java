@@ -828,7 +828,7 @@ public class BasicOpMode_Linear_Autonomous_20211217 extends LinearOpMode {
                         backLeftDrive.setPower(0.5);
                         backRightDrive.setPower(0.5);
 
-                        sleep(1100);
+                        sleep(1000);
 
                         frontLeftDrive.setPower(0);
                         frontRightDrive.setPower(0);
@@ -837,16 +837,33 @@ public class BasicOpMode_Linear_Autonomous_20211217 extends LinearOpMode {
 
                         turn(0.5, 600, "left");
                         move_forward(-.3, 700);
-                        move_forward(.3, 2150);
+                        move_forward(.3, 2050);
                         clawObj.setPosition(.9);
                         sleep(500);
                         move_forward(-.3, 2500);
-                        armObj.setTargetPosition(4800);
+                        armObj.setTargetPosition(3400);
                         armObj.setPower(1);
-                        strafe(0.9, 1100, "right");
+                        strafe(0.5, 1100, "right");
 
                         if (crsRoute == "barrier") {
-                            move_forward(1, 1950);
+                            frontLeftDrive.setPower(0.7);
+                            frontRightDrive.setPower(0.8);
+                            backLeftDrive.setPower(0.7);
+                            backRightDrive.setPower(0.8);
+
+                            sleep(1000);
+
+                            frontLeftDrive.setPower(1);
+                            frontRightDrive.setPower(0.8);
+                            backLeftDrive.setPower(1);
+                            backRightDrive.setPower(0.8);
+
+                            sleep(1800);
+
+                            frontLeftDrive.setPower(0);
+                            frontRightDrive.setPower(0);
+                            backLeftDrive.setPower(0);
+                            backRightDrive.setPower(0);
                         }else {
                             move_forward(.7, 400);
                             strafe(.7, 1500, "right");
@@ -1117,7 +1134,7 @@ public class BasicOpMode_Linear_Autonomous_20211217 extends LinearOpMode {
 
         }else if (elementDropLevel == 3){
 
-            elementDropLevelDegrees = 5600;
+            elementDropLevelDegrees = 5000;
 
         }else{
             elementDropLevelDegrees = 3700;
