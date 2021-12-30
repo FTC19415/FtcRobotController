@@ -617,9 +617,10 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
         telemetry.update();
 
 
-
+// TODO: Make an FtcCamera WebCam here and initialize it
             // Wait for the game to start (driver presses PLAY)
             waitForStart();
+            // TODO: Start the camera and call grabFrame, process the frame, and call deinit
             runtime.reset();
 
 
