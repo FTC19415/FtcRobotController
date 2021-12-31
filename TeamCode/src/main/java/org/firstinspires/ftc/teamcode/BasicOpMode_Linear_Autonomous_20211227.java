@@ -36,11 +36,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
+
 import org.firstinspires.ftc.teamcode.cv.CameraPosition;
 import org.firstinspires.ftc.teamcode.cv.FtcCamera;
 import org.firstinspires.ftc.teamcode.cv.OpenCVWrapper;
@@ -481,10 +478,7 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
 
 
         if (AllianceColor == "red") {
-//            strafe(.5, 400, "right");
-//            //findElement();
             sleep(3000);
-//            strafe(.5, 600, "left");
             if (autonomousSimplicity) {
                 if (simpWhereTo == "warehouse") {
                     if (wrsDelay) {
@@ -625,39 +619,11 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
                 move_forward(-0.4, 700);
                 strafe(0.5, 400, "left");
 
-                        /*
-                        //putting wheel to the carousel
-                        frontLeftDrive.setPower(0.5);
-                        frontRightDrive.setPower(-0.2);
-                        backLeftDrive.setPower(-0.2);
-                        backRightDrive.setPower(-0.2);
-
-                        sleep(1900);
-
-                        frontLeftDrive.setPower(0);
-                        frontRightDrive.setPower(0);
-                        backLeftDrive.setPower(0);
-                        backRightDrive.setPower(0);
-                         */
 
                 move_forward(-0.2, 1000);
 
                 run_carousel(0.3, 3100);
 
-                        /*
-                        //get to wall
-                        frontLeftDrive.setPower(-.5);
-                        frontRightDrive.setPower(.5);
-                        backLeftDrive.setPower(-0.5);
-                        backRightDrive.setPower(-.5);
-
-                        sleep(1100);
-
-                        frontLeftDrive.setPower(0);
-                        frontRightDrive.setPower(0);
-                        backLeftDrive.setPower(0);
-                        backRightDrive.setPower(0);
-                         */
 
                 turn(0.5, 600, "right");
 
