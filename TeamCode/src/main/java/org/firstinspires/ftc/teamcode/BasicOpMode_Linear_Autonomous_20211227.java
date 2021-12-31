@@ -651,6 +651,7 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
                 armObj.setPower(1);
                 strafe(0.5, 1100, "right");
 
+
                 if (crsRoute == "barrier") {
                     frontLeftDrive.setPower(0.7);
                     frontRightDrive.setPower(0.8);
