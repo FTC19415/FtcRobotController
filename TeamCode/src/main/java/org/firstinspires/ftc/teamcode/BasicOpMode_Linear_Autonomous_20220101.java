@@ -1,31 +1,3 @@
-/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
 
 package org.firstinspires.ftc.teamcode;
 
@@ -36,8 +8,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-
 import org.firstinspires.ftc.teamcode.cv.CameraPosition;
 import org.firstinspires.ftc.teamcode.cv.FtcCamera;
 import org.firstinspires.ftc.teamcode.cv.OpenCVWrapper;
@@ -50,7 +22,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
-//import com.qualcomm.robotcore.util.Range;
+
 
 
 /**
@@ -66,9 +38,9 @@ import java.util.concurrent.atomic.AtomicReference;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="DEV Autonomous 12/27", group="Linear Opmode")
+@Autonomous(name="DEV Autonomous 01/01", group="Linear Opmode")
 //@Disabled
-public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
+public class BasicOpMode_Linear_Autonomous_20220101 extends LinearOpMode {
 
     // Declare OpMode members.
     public final FtcCamera webcam = new Webcam();
@@ -92,7 +64,7 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
     boolean runAutonomous;
     String AllianceColor = null;
     boolean autonomousSimplicity;
-    String simpWhereTo = null;
+    String simpWhereT0 = null;
     boolean wrsDelay;
     boolean wrsMove;
     String crsRoute = null;
@@ -105,34 +77,11 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
     //private BNO055IMU imu;
     List<Recognition> recognitions;
 
-//    private static final String TFOD_MODEL_ASSET = "FreightFrenzy_BCDM.tflite";
-//    private static final String[] LABELS = {
-//            "Ball",
-//            "Cube",
-//            "Duck",
-//            "Marker"
-//    };
-//
-//    private static final String VUFORIA_KEY =
-//            "ATk0yPv/////AAABmfvNKymosUClk3BRqGsFS8l8HTVSGSZ50i5mz4JRA23xJ4/ZYY6Ml1JabRGIg9gh7cuejoL8pqxMFL0vvMdASvosvWCL2z9LMyfeN/4ronRK/QM6QCSTEpjKGSZq8PIswC1jfYRC4hs3oGC0pLA1i2FL8waldHko/cdFu9kWjroE8RFvi92f9TjvZ7TjnjCug6ogHqeiGCqXCCZF1YHftkwxkpcv1jJNKB417r7Jqew0vBn3YlyWlMDyEba6RrA3oLsR44P13dirYt8DWBO8AGfQXHZ34b8/cY3p0PDNGEO6vUZit4KM79LgUCyxwl5SRiuSXLi1IEIo7B8R6ypQ5WlfNOZ5UR26SIGcgAxa32Rx";
-//
-//    /**
-//     * {@link #vuforia} is the variable we will use to store our instance of the Vuforia
-//     * localization engine.
-//     */
-//    private VuforiaLocalizer vuforia;
-//
-//    /**
-//     * {@link #tfod} is the variable we will use to store our instance of the TensorFlow Object
-//     * Detection engine.
-//     */
-//    private TFObjectDetector tfod;
 
 
     @Override
     public void runOpMode() {
 
-        OpenCVWrapper.load();
         // BNO055IMU.Parameters IMU_Parameters;
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -147,6 +96,7 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
         armObj = hardwareMap.get(DcMotor.class, "Arm");
         ArmStop = hardwareMap.get(TouchSensor.class, "ArmStop");
 
+
         armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         armObj.setTargetPosition(0);
@@ -159,17 +109,6 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
          * Activate TensorFlow Object Detection before we wait for the start command.
          * Do it here so that the Camera Stream window will have the TensorFlow annotations visible.
          **/
-//        if (tfod != null) {
-//            tfod.activate();
-//
-//            // The TensorFlow software will scale the input images from the camera to a lower resolution.
-//            // This can result in lower detection accuracy at longer distances (> 55cm or 22").
-//            // If your target is at distance greater than 50 cm (20") you can adjust the magnification value
-//            // to artificially zoom in to the center of image.  For best results, the "aspectRatio" argument
-//            // should be set to the value of the images used to create the TensorFlow Object Detection model
-//            // (typically 16/9).
-//            tfod.setZoom(1, 9.0 / 5.0);
-//        }
 
 
         frontLeftDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -183,7 +122,7 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
         while (!(gamepad1.left_bumper)) {
             if (autonomousSimplicity) {
                 telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
-                telemetry.addData("Autonomous Where to:", simpWhereTo);
+                telemetry.addData("Autonomous Where to:", simpWhereT0);
                 telemetry.addData("Warehouse Delay:", wrsDelay);
             } else {
                 telemetry.addData("Alliance Color:", AllianceColor);
@@ -334,16 +273,16 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
 
             } else if (autonomousSelection == 5) {
                 autonomousSimplicity = true;
-                simpWhereTo = "warehouse";
+                simpWhereT0 = "warehouse";
 
             } else if (autonomousSelection == 6) {
                 autonomousSimplicity = true;
-                simpWhereTo = "warehouse";
+                simpWhereT0 = "warehouse";
                 wrsDelay = true;
 
             } else if (autonomousSelection == 7) {
                 autonomousSimplicity = true;
-                simpWhereTo = "storage unit";
+                simpWhereT0 = "storage unit";
             }
         } else if (AllianceColor == "blue") {
 
@@ -364,21 +303,21 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
 
             } else if (autonomousSelection == 12) {
                 autonomousSimplicity = true;
-                simpWhereTo = "warehouse";
+                simpWhereT0 = "warehouse";
 
             } else if (autonomousSelection == 13) {
                 autonomousSimplicity = true;
-                simpWhereTo = "warehouse";
+                simpWhereT0 = "warehouse";
                 wrsDelay = true;
 
             } else if (autonomousSelection == 14) {
-                simpWhereTo = "storage unit";
+                simpWhereT0 = "storage unit";
             }
         }
 
         if (autonomousSimplicity) {
             telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
-            telemetry.addData("Autonomous Where to:", simpWhereTo);
+            telemetry.addData("Autonomous Where to:", simpWhereT0);
             telemetry.addData("Warehouse Delay:", wrsDelay);
         } else {
             telemetry.addData("Alliance Color:", AllianceColor);
@@ -400,7 +339,7 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
 
         if (autonomousSimplicity == true) {
             telemetry.addData("Autonomous Simplicity:", autonomousSimplicity);
-            telemetry.addData("Autonomous Where to:", simpWhereTo);
+            telemetry.addData("Autonomous Where to:", simpWhereT0);
             telemetry.addData("Warehouse Delay:", wrsDelay);
         } else if (autonomousSimplicity == false) {
             telemetry.addData("Alliance Color:", AllianceColor);
@@ -421,6 +360,7 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
 
 
 // TODO: Make an FtcCamera WebCam here and initialize it
+        OpenCVWrapper.load();
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -428,36 +368,45 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
         AtomicReference<Mat> img = new AtomicReference<>();
         AtomicReference<TeamMarkerPosition> teamMarkerPosition =
                 new AtomicReference<>(TeamMarkerPosition.RIGHT);
-        Thread worker =
-                new Thread(
-                        () -> {
-                            webcam.start();
-                            img.set(webcam.grabFrame());
-                        });
-        worker.start();
+//        Thread worker =
+//                new Thread(
+//                        () -> {
+//                            webcam.start();
+//                            img.set(webcam.grabFrame());
+//                        });
+//        worker.start();
+//
+//        try {
+//            worker.join();
+//            worker =
+//                    new Thread(
+//                            () ->
+//                                    teamMarkerPosition.set(
+//                                            new TeamMarkerPositionDetector()
+//                                                    .calculateTeamMarkerPosition(
+//                                                            img.get(), CameraPosition.SIDE)));
+//            worker.start();
+//        } catch (InterruptedException e) {
+//            StringWriter sw = new StringWriter();
+//            PrintWriter pw = new PrintWriter(sw);
+//            e.printStackTrace(pw);
+//        }
+//        try {
+//            worker.join();
+//        } catch (InterruptedException e) {
+//            StringWriter sw = new StringWriter();
+//            PrintWriter pw = new PrintWriter(sw);
+//            e.printStackTrace(pw);
+//        }
+        webcam.start();
+        img.set(webcam.grabFrame());
 
-        try {
-            worker.join();
-            worker =
-                    new Thread(
-                            () ->
-                                    teamMarkerPosition.set(
-                                            new TeamMarkerPositionDetector()
-                                                    .calculateTeamMarkerPosition(
-                                                            img.get(), CameraPosition.SIDE)));
-            worker.start();
-        } catch (InterruptedException e) {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
-        }
-        try {
-            worker.join();
-        } catch (InterruptedException e) {
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            e.printStackTrace(pw);
-        }
+        teamMarkerPosition.set(
+                new TeamMarkerPositionDetector()
+                        .calculateTeamMarkerPosition(
+                                img.get(), CameraPosition.SIDE));
+
+
             switch (teamMarkerPosition.get()) {
                 case LEFT:
                     elementDropLevel = 3;
@@ -480,13 +429,13 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
         if (AllianceColor == "red") {
             sleep(3000);
             if (autonomousSimplicity) {
-                if (simpWhereTo == "warehouse") {
+                if (simpWhereT0 == "warehouse") {
                     if (wrsDelay) {
                         sleep(6000);
                         move_forward(1, 400);
                     }
                     move_forward(1, 700);
-                } else if (simpWhereTo == "storage unit") {
+                } else if (simpWhereT0 == "storage unit") {
                     strafe(.5, 500, "right");
                     move_forward(-.5, 1000);
                     turn(.5, 500, "right");
@@ -579,13 +528,13 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
             turn(.5, 1200, "right");
             strafe(.5, 600, "right");
             if (autonomousSimplicity) {
-                if (simpWhereTo == "warehouse") {
+                if (simpWhereT0 == "warehouse") {
                     if (wrsDelay) {
                         sleep(6000);
                         move_forward(1, 400);
                     }
                     move_forward(1, 700);
-                } else if (simpWhereTo == "storage unit") {
+                } else if (simpWhereT0 == "storage unit") {
                     strafe(.5, 500, "left");
                     move_forward(-.5, 1000);
                     turn(.5, 500, "left");
@@ -682,6 +631,8 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
             armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             armObj.setPower(-.6);
         }
+
+        onStop();
 
 
         // Show the elapsed game time and wheel power.
@@ -835,127 +786,7 @@ public class BasicOpMode_Linear_Autonomous_20211227 extends LinearOpMode {
 
         carousel.setPower(0);
     }
-/*
-    private void initVuforia() {
 
-        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        parameters.vuforiaLicenseKey = VUFORIA_KEY;
-        parameters.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
-
-        //  Instantiate the Vuforia engine
-        vuforia = ClassFactory.getInstance().createVuforia(parameters);
-
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
-
-        // Loading trackables is not necessary for the TensorFlow Object Detection engine.
-    }
-
-    private void initTfod() {
-        int tfodMonitorViewId = hardwareMap.appContext.getResources().getIdentifier(
-                "tfodMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        TFObjectDetector.Parameters tfodParameters = new TFObjectDetector.Parameters(tfodMonitorViewId);
-        tfodParameters.minResultConfidence = 0.8f;
-        tfodParameters.isModelTensorFlow2 = true;
-        tfodParameters.inputSize = 320;
-        tfod = ClassFactory.getInstance().createTFObjectDetector(tfodParameters, vuforia);
-        tfod.loadModelFromAsset(TFOD_MODEL_ASSET, LABELS);
-    }
-
-    private void findElement() {
-        if (tfod != null) {
-            // getUpdatedRecognitions() will return null if no new information is available since
-            // the last time that call was made.
-            List<Recognition> updatedRecognitions = tfod.getUpdatedRecognitions();
-            if (updatedRecognitions != null) {
-                telemetry.addData("# Object Detected", updatedRecognitions.size());
-
-                // step through the list of recognitions and display boundary info.
-                int i = 0;
-                for (Recognition recognition : updatedRecognitions) {
-                    telemetry.addData(String.format("label (%d)", i), recognition.getLabel());
-                    telemetry.addData(String.format("  left,top (%d)", i), "%.03f , %.03f",
-                            recognition.getLeft(), recognition.getTop());
-                    telemetry.addData(String.format("  right,bottom (%d)", i), "%.03f , %.03f",
-                            recognition.getRight(), recognition.getBottom());
-                    i++;
-
-                    // check label to see if the camera now sees a Cube
-                    if (recognition.getLabel().equals("Cube")) {
-                        whatIsDetected = "Cube";
-                        telemetry.addData("Object Detected", whatIsDetected);
-                        elementPosition = recognition.getLeft();
-                        telemetry.addData("Element Position", elementPosition);
-                    } else if (recognition.getLabel().equals("Marker")) {
-                        whatIsDetected = "Marker";
-                        telemetry.addData("Object Detected", whatIsDetected);
-                        elementPosition = recognition.getLeft();
-                        telemetry.addData("Element Position", elementPosition);
-                    }
-                    telemetry.update();
-                }
-                telemetry.update();
-            }
-        }
-
-        if (AllianceColor == "red") {
-            if (whatIsDetected == "Cube") {
-                if (elementPosition >= 600) {
-                    //right most spot
-                    elementDropLevel = 1;
-                } else if (elementPosition >= 200 && elementPosition <= 575) {
-                    elementDropLevel = 2;
-                } else if (elementPosition <= 190) {
-                    elementDropLevel = 3;
-                }
-            } else if (whatIsDetected == "Marker") {
-                if (elementPosition <= 190) {
-                    elementDropLevel = 3;
-                }
-            }
-        }else if (AllianceColor == "blue")
-            if (whatIsDetected == "Cube") {
-                if (elementPosition <= 190) {
-                    //right most spot
-                    elementDropLevel = 1;
-                } else if (elementPosition >= 200 && elementPosition <= 400) {
-                    elementDropLevel = 2;
-                } else if (elementPosition >= 500) {
-                    elementDropLevel = 3;
-                }
-            } else if (whatIsDetected == "Marker") {
-                if (elementPosition >= 600) {
-                    elementDropLevel = 3;
-                }
-            }
-
-        if (elementDropLevel == 1) {
-
-            elementDropLevelDegrees = 3600;
-
-        }else if (elementDropLevel == 2) {
-
-            elementDropLevelDegrees = 4700;
-
-        }else if (elementDropLevel == 3){
-
-            elementDropLevelDegrees = 5000;
-
-        }else{
-            elementDropLevelDegrees = 3700;
-        }
-
-    }
-    */
-
-    //Describe this function...
-
-    /*private boolean IMU_Calibrated() {
-        telemetry.addData("IMU Calibration Status", imu.getCalibrationStatus());
-        telemetry.addData("Gyro Calibrated", imu.isGyroCalibrated() ? "True" : "False");
-        telemetry.addData("System Satus", imu.getSystemStatus());
-        return imu.isGyroCalibrated();
-    }*/
 
 //    //@Override
     public void onStop() {

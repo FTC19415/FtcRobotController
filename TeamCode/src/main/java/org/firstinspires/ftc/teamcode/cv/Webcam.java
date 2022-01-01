@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Webcam implements FtcCamera {
     private static final int secondsPermissionTimeout = Integer.MAX_VALUE;
-    private static final String CAMERA_NAME = "CB_AUTO_Webcam 1";
+    private static final String CAMERA_NAME = "Webcam 1";
     private final Handler callbackHandler = CallbackLooper.getDefault().getHandler();
     private final BlockingQueue<Bitmap> frameQueue = new LinkedBlockingQueue<>(1);
 
