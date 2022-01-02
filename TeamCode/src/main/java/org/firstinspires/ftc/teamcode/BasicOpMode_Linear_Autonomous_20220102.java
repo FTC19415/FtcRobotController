@@ -2,14 +2,12 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.cv.CameraPosition;
 import org.firstinspires.ftc.teamcode.cv.FtcCamera;
@@ -25,7 +23,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 
-
 /**
  * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
@@ -39,9 +36,9 @@ import java.util.concurrent.atomic.AtomicReference;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="DEV Autonomous 01/01", group="Linear Opmode")
-@Disabled
-public class BasicOpMode_Linear_Autonomous_20220101 extends LinearOpMode {
+@Autonomous(name="Autonomous 01/02", group="Linear Opmode")
+//@Disabled
+public class BasicOpMode_Linear_Autonomous_20220102 extends LinearOpMode {
 
     // Declare OpMode members.
     public final FtcCamera webcam = new Webcam();
@@ -409,6 +406,7 @@ public class BasicOpMode_Linear_Autonomous_20220101 extends LinearOpMode {
                                 img.get(), CameraPosition.SIDE));
 
 
+        //assigning the drop level based on what the camera sees
             switch (teamMarkerPosition.get()) {
                 case LEFT:
                     elementDropLevel = 3;
@@ -424,17 +422,18 @@ public class BasicOpMode_Linear_Autonomous_20220101 extends LinearOpMode {
         telemetry.addData("Drop Level:", teamMarkerPosition.get());
         telemetry.update();
 
+        //setting the arm degree position based on the drop level
         if (elementDropLevel == 1) {
 
             elementDropLevelDegrees = 3600;
 
         }else if (elementDropLevel == 2) {
 
-            elementDropLevelDegrees = 4700;
+            elementDropLevelDegrees = 4800;
 
         }else if (elementDropLevel == 3){
 
-            elementDropLevelDegrees = 6000;
+            elementDropLevelDegrees = 5600;
 
         }else{
             elementDropLevelDegrees = 3600;
@@ -445,7 +444,6 @@ public class BasicOpMode_Linear_Autonomous_20220101 extends LinearOpMode {
 
 
         if (AllianceColor == "red") {
-            sleep(3000);
             if (autonomousSimplicity) {
                 if (simpWhereT0 == "warehouse") {
                     if (wrsDelay) {
@@ -469,19 +467,17 @@ public class BasicOpMode_Linear_Autonomous_20220101 extends LinearOpMode {
                 sleep(1000);
                 move_forward(-0.3, 900);
                 move_forward(0.3, 1100);
-                sleep(2000);
+                sleep(1000);
                 clawObj.setPosition(.9);
                 sleep(500);
                 move_forward(-0.5, 1050);
-                turn(0.5, 650, "right");
-                while (!ArmStop.isPressed()) {
-                    armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    armObj.setPower(-.6);
-                }
+                turn(0.5, 575, "right");
+                armObj.setTargetPosition(1000);
+                armObj.setPower(1);
                 move_forward(.5, 2000);
 
                 if (wrsMove) {
-                    strafe(.5, 200, "left");
+                    strafe(.5, 900, "right");
                 }
 
             } else if (StartPosition == 2) {
@@ -489,7 +485,7 @@ public class BasicOpMode_Linear_Autonomous_20220101 extends LinearOpMode {
 
                 armObj.setTargetPosition(elementDropLevelDegrees);
                 armObj.setPower(1);
-                move_forward(-0.4, 700);
+                move_forward(-0.4, 750);
 
                 //Putting motor on carousel
                 frontLeftDrive.setPower(-.2);
@@ -528,29 +524,21 @@ public class BasicOpMode_Linear_Autonomous_20220101 extends LinearOpMode {
                 clawObj.setPosition(.9);
                 sleep(500);
                 move_forward(-.3, 2500);
-                armObj.setTargetPosition(elementDropLevelDegrees);
+                armObj.setTargetPosition(1000);
                 armObj.setPower(1);
-                strafe(0.5, 650, "left");
-                while (!ArmStop.isPressed()) {
-                    armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    armObj.setPower(-.6);
-                }
+                strafe(0.5, 1000, "left");
 
                 if (crsRoute == "barrier") {
-                    move_forward(1, 1950);
+                    move_forward(.5, 4000);
                 } else {
                     move_forward(.7, 300);
                     strafe(.7, 1500, "left");
-                    move_forward(.75, 1700);
+                    move_forward(.5, 3500);
                 }
             }
         }
 
         if (AllianceColor == "blue") {
-//            strafe(.5, 600, "left");
-//            strafe(.5, 400, "right");
-//            //findElement();
-            sleep(3000);
             turn(.5, 1200, "right");
             strafe(.5, 600, "right");
             if (autonomousSimplicity) {
@@ -570,9 +558,9 @@ public class BasicOpMode_Linear_Autonomous_20220101 extends LinearOpMode {
             } else if (StartPosition == 3) {
                 //Warehouse Code: Drive into the warehouse
                 move_forward(-.5, 600);
-                turn(0.5, 550, "right");
                 armObj.setTargetPosition(elementDropLevelDegrees);
                 armObj.setPower(1);
+                turn(0.5, 550, "right");
                 sleep(1000);
                 move_forward(-0.3, 900);
                 move_forward(0.3, 1100);
@@ -580,15 +568,13 @@ public class BasicOpMode_Linear_Autonomous_20220101 extends LinearOpMode {
                 clawObj.setPosition(.9);
                 sleep(500);
                 move_forward(-0.5, 1050);
-                turn(0.5, 700, "left");
-                while (!ArmStop.isPressed()) {
-                    armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    armObj.setPower(-.6);
-                }
+                turn(0.5, 575, "left");
+                armObj.setTargetPosition(1000);
+                armObj.setPower(1);
                 move_forward(.5, 2000);
 
                 if (wrsMove) {
-                    strafe(.5, 200, "right");
+                    strafe(.5, 700, "left");
                 }
 
             } else if (StartPosition == 4) {
@@ -599,64 +585,32 @@ public class BasicOpMode_Linear_Autonomous_20220101 extends LinearOpMode {
                 strafe(0.5, 400, "left");
 
 
-                move_forward(-0.2, 1000);
+                move_forward(-0.2, 700);
 
-                run_carousel(0.3, 3100);
+                run_carousel(0.3, 6000);
 
 
                 turn(0.5, 600, "right");
 
-                //move to blue box
-                frontLeftDrive.setPower(0.5);
-                frontRightDrive.setPower(0.5);
-                backLeftDrive.setPower(0.5);
-                backRightDrive.setPower(0.5);
 
-                sleep(1000);
-
-                frontLeftDrive.setPower(0);
-                frontRightDrive.setPower(0);
-                backLeftDrive.setPower(0);
-                backRightDrive.setPower(0);
-
+                move_forward(0.5, 1200);
 
                 turn(0.5, 600, "left");
-                move_forward(-.3, 700);
-                move_forward(.3, 2100);
+                move_forward(-.3, 625);
+                move_forward(.3, 1900);
                 clawObj.setPosition(.9);
                 sleep(500);
                 move_forward(-.3, 2500);
-                armObj.setTargetPosition(elementDropLevelDegrees);
+                armObj.setTargetPosition(1000);
                 armObj.setPower(1);
                 strafe(0.5, 1100, "right");
-                while (!ArmStop.isPressed()) {
-                    armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    armObj.setPower(-.6);
-                }
 
                 if (crsRoute == "barrier") {
-                    frontLeftDrive.setPower(0.7);
-                    frontRightDrive.setPower(0.8);
-                    backLeftDrive.setPower(0.7);
-                    backRightDrive.setPower(0.8);
-
-                    sleep(1000);
-
-                    frontLeftDrive.setPower(1);
-                    frontRightDrive.setPower(0.9);
-                    backLeftDrive.setPower(1);
-                    backRightDrive.setPower(0.9);
-
-                    sleep(1000);
-
-                    frontLeftDrive.setPower(0);
-                    frontRightDrive.setPower(0);
-                    backLeftDrive.setPower(0);
-                    backRightDrive.setPower(0);
+                    move_forward(.5, 5000);
                 } else {
                     move_forward(.7, 400);
                     strafe(.7, 1500, "right");
-                    move_forward(.75, 1700);
+                    move_forward(.5, 3500);
                 }
             }
 
