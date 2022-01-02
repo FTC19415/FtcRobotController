@@ -357,13 +357,13 @@ public class BasicOpMode_Linear_Autonomous_20220102 extends LinearOpMode {
         telemetry.update();
 
 
-// TODO: Make an FtcCamera WebCam here and initialize it
+//Make an FtcCamera WebCam here and initialize it
         OpenCVWrapper.load();
         webcam.init(hardwareMap);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
-        // TODO: Start the camera and call grabFrame, process the frame, and call deinit
+// Start the camera and call grabFrame, process the frame, and call deinit
         AtomicReference<Mat> img = new AtomicReference<>();
         AtomicReference<TeamMarkerPosition> teamMarkerPosition =
                 new AtomicReference<>(TeamMarkerPosition.RIGHT);
