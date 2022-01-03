@@ -1,33 +1,5 @@
-package org.firstinspires.ftc.teamcode;/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -36,26 +8,10 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 
-/**
- * This file contains an example of an iterative (Non-Linear) "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all iterative OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
-
-@TeleOp(name="Mechanum Drive 12/07", group="Iterative Opmode")
-@Disabled
-public class BasicOpMode_Iterative_Drive_211207 extends OpMode
+@TeleOp(name="Mechanum Drive 01/03", group="Iterative Opmode")
+//@Disabled
+public class BasicOpMode_Iterative_Drive_220103 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -67,13 +23,14 @@ public class BasicOpMode_Iterative_Drive_211207 extends OpMode
     private DcMotor armObj = null;
     private DcMotor LinearArmObj = null;
     private Servo clawObj = null;
-    private Servo wristLPos = null;
-    private Servo wristRNeg = null;
     private TouchSensor ArmStop;
     private boolean isArmButtonPressed = true;
+    private Servo wristLPos = null;
+    private Servo wristRNeg = null;
     double dblWristPosition;
     private double wristMax = 0.858;
     private double wristMin = 0.204;
+
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -98,7 +55,6 @@ public class BasicOpMode_Iterative_Drive_211207 extends OpMode
         ArmStop = hardwareMap.get(TouchSensor.class, "ArmStop");
         wristLPos = hardwareMap.get(Servo.class, "LeftWrist");
         wristRNeg = hardwareMap.get(Servo.class, "RightWrist");
-
 
         LinearArmObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LinearArmObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -154,8 +110,6 @@ public class BasicOpMode_Iterative_Drive_211207 extends OpMode
         double fltStrafe;
         double fltPivot;
         double fltArm;
-        double fltWrists;
-        double wristMath;
         int intArmPosition;
         int intArmPositionPick;
         int intArmPositionDropMid;
@@ -178,8 +132,7 @@ public class BasicOpMode_Iterative_Drive_211207 extends OpMode
         double drive = -gamepad1.left_stick_y;
         double turn  =  gamepad1.right_stick_x;
         double up = gamepad2.left_stick_y;
-        double down = -gamepad2.left_stick_y;
-        double move = gamepad2.right_stick_y;
+        double down = -gamepad2.right_stick_y;
         YTimer = 0;
         YTimerTwo = 0;
 
@@ -192,20 +145,25 @@ public class BasicOpMode_Iterative_Drive_211207 extends OpMode
         double armPowerDown = Range.clip(down, -.7, -.05);
         double armPowerUp = Range.clip(up, .05, .7);
 
-        //double wrists = Range.clip(move, )
-
-//        wristMath = (gamepad2.right_stick_y * 0.5 + 0.5);
-
-        //noinspection UnusedAssignment
+        if  (gamepad1.left_stick_y < 0) {
+            fltForward = -(gamepad1.left_stick_y * gamepad1.left_stick_y);
+        }else if (gamepad1.left_stick_y > 0) {
+            fltForward = (gamepad1.left_stick_y * gamepad1.left_stick_y);
+        }
         fltForward = -gamepad1.left_stick_y;
         fltStrafe = gamepad1.left_stick_x;
         fltPivot = gamepad1.right_stick_x;
 
         fltArm = -gamepad2.left_stick_y;
 
-        //fltWrists = wristMath;
-
-
+        // crazy Shayne code
+        int isPositive = -1;
+        if(fltArm > 0.0)
+        {
+            isPositive = 1;
+        }
+        fltArm = isPositive * (fltArm * fltArm);
+        // end crazy Shayne code
 
         //This controls ALL arm movement
         if (gamepad2.left_stick_y <= 1 && gamepad2.left_stick_y > 0.05) {
@@ -258,7 +216,6 @@ public class BasicOpMode_Iterative_Drive_211207 extends OpMode
 
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }else if (gamepad2.x) {
-            setWristPosition(0.858);
             armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             while (!ArmStop.isPressed()) {
                 LinearArmObj.setTargetPosition(0);
@@ -294,13 +251,6 @@ public class BasicOpMode_Iterative_Drive_211207 extends OpMode
 
         }
 
-
-
-
-        // Comment out the method that's not used.  The default below is POV.
-
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
 
         // Carousel Spinner motor section
         if (gamepad1.left_trigger > fltNormalFactor) {
@@ -340,16 +290,6 @@ public class BasicOpMode_Iterative_Drive_211207 extends OpMode
             clawObj.setPosition(.9);
         }
 
-//        int armPosition = armObj.getCurrentPosition();
-//        if (gamepad2.dpad_left) {
-//            Move the wrists to 0.5
-//            setWristPosition(gamepad2.right_stick_y * 0.5 + 0.5);
-//        }
-//        else if ((armPosition > 3700) && (armPosition < 5900)) {
-//            setWristPosition(armPosition * 0.0001345 + 1.1675);
-//        }else if (armPosition < 3700) {
-//            setWristPosition(wristMax);
-//        }
         if (gamepad2.dpad_left) {
             setWristPosition(0.683);
         }
@@ -357,8 +297,6 @@ public class BasicOpMode_Iterative_Drive_211207 extends OpMode
         if (gamepad2.dpad_right) {
             setWristPosition(0.485);
         }
-
-
 
         //Linear Arm movement
         if (gamepad2.dpad_up) {
@@ -434,6 +372,7 @@ public class BasicOpMode_Iterative_Drive_211207 extends OpMode
     @Override
     public void stop() {
     }
+
     private void setWristPosition(double inputPosition) {
 
         double position = .5;
@@ -447,4 +386,5 @@ public class BasicOpMode_Iterative_Drive_211207 extends OpMode
         wristLPos.setPosition(position);
         wristRNeg.setPosition(((position - 0.5) - 0.5) * (-1));
     }
+
 }
