@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-@TeleOp(name="Mechanum Drive Wrist 01/03", group="Iterative Opmode")
+@TeleOp(name="Mechanum Drive New Robot 01/04", group="Iterative Opmode")
 //@Disabled
-public class BasicOpMode_Iterative_Drive_220103 extends OpMode
+public class BasicOpMode_Iterative_Drive_220104 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -22,6 +22,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
     private DcMotor carousel = null;
     private DcMotor armObj = null;
     private DcMotor LinearArmObj = null;
+    private DcMotor turretObj = null;
     private Servo clawObj = null;
     private TouchSensor ArmStop;
     private boolean isArmButtonPressed = true;
@@ -50,6 +51,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightMotor");
         carousel = hardwareMap.get(DcMotor.class, "carousel");
         armObj = hardwareMap.get(DcMotor.class, "Arm");
+        turretObj = hardwareMap.get(DcMotor.class, "turret");
         clawObj = hardwareMap.get(Servo.class, "Claw");
         LinearArmObj = hardwareMap.get(DcMotor.class, "LinearArm");
         ArmStop = hardwareMap.get(TouchSensor.class, "ArmStop");
@@ -58,6 +60,9 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
 
         LinearArmObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LinearArmObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        turretObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turretObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -110,6 +115,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         double fltStrafe;
         double fltPivot;
         double fltArm;
+        double fltTurret;
         int intArmPosition;
         int intArmPositionPick;
         int intArmPositionDropMid;
@@ -133,6 +139,8 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         double turn  =  gamepad1.right_stick_x;
         double up = gamepad2.left_stick_y;
         double down = -gamepad2.right_stick_y;
+        double right = gamepad2.right_stick_x;
+        double left = -gamepad2.right_stick_x;
         YTimer = 0;
         YTimerTwo = 0;
 
@@ -155,6 +163,28 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         fltPivot = gamepad1.right_stick_x;
 
         fltArm = -gamepad2.left_stick_y;
+
+        fltTurret = -gamepad2.right_stick_x;
+
+        turretObj.setPower(fltTurret);
+
+        //Turret code to use once we have found the bounds
+//        if (gamepad2.right_stick_x <= 1 && gamepad2.right_stick_x > 0.05) {
+//            if (turretObj.getCurrentPosition() >= 50) {
+//                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//                turretObj.setPower(fltTurret);
+//            }
+//        }else if(gamepad2.right_stick_x >= -1 && gamepad2.right_stick_x < -0.05){
+//            if (turretObj.getCurrentPosition() < 7000 - 50){
+//                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//                turretObj.setPower(fltTurret);
+//            }
+//        }
+
 
         // crazy Shayne code
         int isPositive = -1;
@@ -279,6 +309,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         // fancy rubber arm open-.65, close-1
         //OG sttings open-0.2, close-0.6
 
+        //Claw code
         if (gamepad2.right_bumper) {
             //Close the claw
             clawObj.setPosition(.7);
@@ -290,10 +321,10 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
             clawObj.setPosition(.9);
         }
 
+        //Wrist code
         if (gamepad2.dpad_left) {
             setWristPosition(0.683);
         }
-
         if (gamepad2.dpad_right) {
             setWristPosition(0.485);
         }
@@ -335,6 +366,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
             LinearArmObj.setPower(0);
         }
 
+        //I am speed code
         if (gamepad1.right_trigger > fltNormalFactor) {
             fltForward = gamepad1.right_trigger * -gamepad1.left_stick_y;
             fltStrafe = gamepad1.right_trigger * gamepad1.left_stick_x;
@@ -346,7 +378,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         }
 
 
-        // Send calculated power to wheels
+        // Send calculated power to wheels/ drive code
         frontLeftDrive.setPower(fltForward + fltStrafe + fltPivot);
         frontRightDrive.setPower(fltForward + -fltStrafe + -fltPivot);
         backLeftDrive.setPower(fltForward + -fltStrafe + fltPivot);
@@ -359,6 +391,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Is Arm Stop pressed:", ArmStop.isPressed());
         telemetry.addData("Arm Position:", armObj.getCurrentPosition());
+        telemetry.addData("Turret Position:", turretObj.getCurrentPosition());
         telemetry.addData("Wrist L Position:", wristLPos.getPosition());
         telemetry.addData("Wrist R Position:", wristRNeg.getPosition());
         telemetry.addData("Was Arm button last action?:", isArmButtonPressed);
