@@ -166,9 +166,10 @@ public class BasicOpMode_Iterative_Drive_220104 extends OpMode
 
         fltTurret = -gamepad2.right_stick_x;
 
-        turretObj.setPower(fltTurret);
+        //turretObj.setPower(fltTurret);
 
         //Turret code to use once we have found the bounds
+        //TODO: Need to slow down motors before reaching the bounds(Use linear arm code)
         if (gamepad2.right_stick_x <= 1 && gamepad2.right_stick_x > 0.05) {
             if (turretObj.getCurrentPosition() >= -1776) {
                 turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -187,6 +188,8 @@ public class BasicOpMode_Iterative_Drive_220104 extends OpMode
             }else{
                 turretObj.setPower(0);
             }
+        }else{
+            turretObj.setPower(0);
         }
 
 
