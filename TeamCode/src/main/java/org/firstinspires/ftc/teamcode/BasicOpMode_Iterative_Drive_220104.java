@@ -169,21 +169,25 @@ public class BasicOpMode_Iterative_Drive_220104 extends OpMode
         turretObj.setPower(fltTurret);
 
         //Turret code to use once we have found the bounds
-//        if (gamepad2.right_stick_x <= 1 && gamepad2.right_stick_x > 0.05) {
-//            if (turretObj.getCurrentPosition() >= 50) {
-//                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//
-//                turretObj.setPower(fltTurret);
-//            }
-//        }else if(gamepad2.right_stick_x >= -1 && gamepad2.right_stick_x < -0.05){
-//            if (turretObj.getCurrentPosition() < 7000 - 50){
-//                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-//                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//
-//                turretObj.setPower(fltTurret);
-//            }
-//        }
+        if (gamepad2.right_stick_x <= 1 && gamepad2.right_stick_x > 0.05) {
+            if (turretObj.getCurrentPosition() >= -1776) {
+                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                turretObj.setPower(fltTurret);
+            }else{
+                turretObj.setPower(0);
+            }
+        }else if(gamepad2.right_stick_x >= -1 && gamepad2.right_stick_x < -0.05){
+            if (turretObj.getCurrentPosition() < 2761){
+                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                turretObj.setPower(fltTurret);
+            }else{
+                turretObj.setPower(0);
+            }
+        }
 
 
         // crazy Shayne code
