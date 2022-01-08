@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,9 +9,9 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-@TeleOp(name="Mechanum Drive Wrist 01/03", group="Iterative Opmode")
-@Disabled
-public class BasicOpMode_Iterative_Drive_220103 extends OpMode
+@TeleOp(name="Mechanum Drive New Robot 01/08", group="Iterative Opmode")
+//@Disabled
+public class BasicOpMode_Iterative_Drive_220108 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -23,6 +22,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
     private DcMotor carousel = null;
     private DcMotor armObj = null;
     private DcMotor LinearArmObj = null;
+    private DcMotor turretObj = null;
     private Servo clawObj = null;
     private TouchSensor ArmStop;
     private boolean isArmButtonPressed = true;
@@ -51,6 +51,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         backRightDrive = hardwareMap.get(DcMotor.class, "backRightMotor");
         carousel = hardwareMap.get(DcMotor.class, "carousel");
         armObj = hardwareMap.get(DcMotor.class, "Arm");
+        turretObj = hardwareMap.get(DcMotor.class, "turret");
         clawObj = hardwareMap.get(Servo.class, "Claw");
         LinearArmObj = hardwareMap.get(DcMotor.class, "LinearArm");
         ArmStop = hardwareMap.get(TouchSensor.class, "ArmStop");
@@ -59,6 +60,9 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
 
         LinearArmObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LinearArmObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        turretObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turretObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -111,6 +115,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         double fltStrafe;
         double fltPivot;
         double fltArm;
+        double fltTurret;
         int intArmPosition;
         int intArmPositionPick;
         int intArmPositionDropMid;
@@ -121,12 +126,13 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         ElapsedTime ElapsedTime2;
         int ghostingTime;
         double fltNormalFactor;
+        double wristFlow;
         int currentLinearArmPosition = 0;
         ElapsedTime2 = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
         ghostingTime = 200;
         fltNormalFactor = 0.4;
         intArmPosition = 0;
-        intArmPositionPick = 5900; //new robot changed from 5800 to 6000 20211114
+        intArmPositionPick = 6860; //new robot changed from 5800 to 6000 20211114
         intArmPositionDropMid = 4700;
         intArmPositionDrive = 2600;
         intArmPositionDropUp = 3700;
@@ -134,6 +140,8 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         double turn  =  gamepad1.right_stick_x;
         double up = gamepad2.left_stick_y;
         double down = -gamepad2.right_stick_y;
+        double right = gamepad2.right_stick_x;
+        double left = -gamepad2.right_stick_x;
         YTimer = 0;
         YTimerTwo = 0;
 
@@ -157,6 +165,43 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
 
         fltArm = -gamepad2.left_stick_y;
 
+        fltTurret = gamepad2.right_stick_x;
+
+        //turretObj.setPower(fltTurret);
+
+        //Turret code to use once we have found the bounds
+        //TODO: Need to slow down motors before reaching the bounds(Use linear arm code)
+
+        if (gamepad2.right_stick_x <= 1 && gamepad2.right_stick_x > 0.05) {
+            if (turretObj.getCurrentPosition() >= -1776) {
+                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                turretObj.setPower(fltTurret);
+            }else if(turretObj.getCurrentPosition() >= -1200){
+                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                turretObj.setPower(fltTurret * 0.5);
+            }else{
+                turretObj.setPower(0);
+            }
+        }else if(gamepad2.right_stick_x >= -1 && gamepad2.right_stick_x < -0.05){
+            if (turretObj.getCurrentPosition() < 2761){
+                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                turretObj.setPower(fltTurret);
+            }else if(turretObj.getCurrentPosition() < 2220){
+                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                turretObj.setPower(fltTurret * 0.5);
+            }else{
+                turretObj.setPower(0);
+            }
+        }else{
+            turretObj.setPower(0);
+        }
+
+
         // crazy Shayne code
         int isPositive = -1;
         if(fltArm > 0.0)
@@ -166,91 +211,101 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         fltArm = isPositive * (fltArm * fltArm);
         // end crazy Shayne code
 
+
         //This controls ALL arm movement
-        if (gamepad2.left_stick_y <= 1 && gamepad2.left_stick_y > 0.05) {
-            if (armObj.getCurrentPosition() >= 50){
-                armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            if (gamepad2.left_stick_y <= 1 && gamepad2.left_stick_y > 0.05) {
+                if (armObj.getCurrentPosition() >= -850) {
+                    armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-                armObj.setPower(fltArm);
-                isArmButtonPressed = false;
-            }else{
-                armObj.setPower(0);
-            }
-        }else if(gamepad2.left_stick_y >= -1 && gamepad2.left_stick_y < -0.05){
-            if (armObj.getCurrentPosition() < intArmPositionPick - 50){
-                armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-                armObj.setPower(fltArm);
-                isArmButtonPressed = false;
-            }else{
-                 armObj.setPower(0);
-             }
-
-        }else if (gamepad2.b) {
-            if (ElapsedTime2.milliseconds() > YTimer) {
-                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                //armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                armObj.setTargetPosition(intArmPositionDropMid);
-                armObj.setPower(1);
-                isArmButtonPressed = true;
-            }
-            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
-        }else if (gamepad2.y) {
-            if (ElapsedTime2.milliseconds() > YTimer) {
-                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                //armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                armObj.setTargetPosition(intArmPositionDropUp);
-                armObj.setPower(1);
-                isArmButtonPressed = true;
-            }
-
-            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
-        }else if (gamepad2.a) {
-            if (ElapsedTime2.milliseconds() > YTimer) {
-
-                armObj.setTargetPosition(intArmPositionPick);
-                armObj.setPower(1);
-                isArmButtonPressed = true;
-            }
-
-            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
-        }else if (gamepad2.x) {
-            armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            while (!ArmStop.isPressed()) {
-                LinearArmObj.setTargetPosition(0);
-                if (LinearArmObj.getCurrentPosition() > 800) {
-                    LinearArmObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    LinearArmObj.setPower(-.7);
-                    //LinearArmObj.setTargetPosition(currentLinearArmPosition - 100);
-                    //currentLinearArmPosition = LinearArmObj.getTargetPosition();
-                }else if (LinearArmObj.getCurrentPosition() > 75){
-
-                    LinearArmObj.setPower(-.4);
-                    //LinearArmObj.setTargetPosition(currentLinearArmPosition + 100);
-                    //currentLinearArmPosition = LinearArmObj.getTargetPosition();
+                    armObj.setPower(fltArm);
+                    isArmButtonPressed = false;
+                } else {
+                    armObj.setPower(0);
                 }
-                armObj.setPower(-.6);
+            } else if (gamepad2.left_stick_y >= -1 && gamepad2.left_stick_y < -0.05){
+                if (armObj.getCurrentPosition() < intArmPositionPick - 50) {
+                    armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                    armObj.setPower(fltArm);
+                    isArmButtonPressed = false;
+                } else {
+                    armObj.setPower(0);
+                }
+
+            } else if (gamepad2.b) {
+                if (ElapsedTime2.milliseconds() > YTimer) {
+                    //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    //armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armObj.setTargetPosition(intArmPositionDropMid);
+                    armObj.setPower(1);
+                    isArmButtonPressed = true;
+                }
+                YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+            } else if (gamepad2.y) {
+                if (ElapsedTime2.milliseconds() > YTimer) {
+                    //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    //armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armObj.setTargetPosition(intArmPositionDropUp);
+                    armObj.setPower(1);
+                    isArmButtonPressed = true;
+                }
+
+                YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+            } else if (gamepad2.a) {
+                if (ElapsedTime2.milliseconds() > YTimer) {
+
+                    armObj.setTargetPosition(intArmPositionPick);
+                    armObj.setPower(1);
+                    isArmButtonPressed = true;
+                }
+
+                YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+            } else if (gamepad2.x) {
+                armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                if (gamepad2.left_stick_y <= 1 && gamepad2.left_stick_y > 0.05) {
+                    if (armObj.getCurrentPosition() >= -460) {
+                        armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                        //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                        armObj.setPower(fltArm);
+                        isArmButtonPressed = false;
+                    } else {
+                        armObj.setPower(0);
+                        armObj.setTargetPosition(armObj.getCurrentPosition());
+                        armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                        armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    }
+                } else if (gamepad2.left_stick_y >= -1 && gamepad2.left_stick_y < -0.05) {
+                    if (armObj.getCurrentPosition() < intArmPositionPick - 50) {
+                        armObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                        //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                        armObj.setPower(fltArm);
+                        isArmButtonPressed = false;
+                    } else {
+
+                    }
+                }
+
+                armObj.setPower(0);
+                armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                armObj.setTargetPosition(0);
+                armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                isArmButtonPressed = true;
+
+            } else if (isArmButtonPressed) {
+                // Do nothing but keep running to position
+            } else {
+                //stop the arm if the arm stick is not active
+                armObj.setPower(0);
+                armObj.setTargetPosition(armObj.getCurrentPosition());
+                armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             }
-
-            armObj.setPower(0);
-            armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            armObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            armObj.setTargetPosition(0);
-            armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            isArmButtonPressed = true;
-
-        }else if (isArmButtonPressed) {
-            // Do nothing but keep running to position
-        } else {
-            //stop the arm if the arm stick is not active
-            armObj.setPower(0);
-            armObj.setTargetPosition(armObj.getCurrentPosition());
-            armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            armObj.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        }
 
 
         // Carousel Spinner motor section
@@ -264,22 +319,25 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
                 // Shut off the motor
                 carousel.setPower(0);
             }
-        }else{
-            if (gamepad1.left_bumper) {
-                carousel.setPower(-carouselPower);
-            } else if (gamepad1.right_bumper) {
-                carousel.setPower(carouselPower);  //changed from .5 20211114
-            } else {
-                // Shut off the motor
-                carousel.setPower(0);
-            }
+        }else
+
+    {
+        if (gamepad1.left_bumper) {
+            carousel.setPower(-carouselPower);
+        } else if (gamepad1.right_bumper) {
+            carousel.setPower(carouselPower);  //changed from .5 20211114
+        } else {
+            // Shut off the motor
+            carousel.setPower(0);
         }
+    }
 
 
 // If it was flat use open-0.7, close-1
         // fancy rubber arm open-.65, close-1
         //OG sttings open-0.2, close-0.6
 
+        //Claw code
         if (gamepad2.right_bumper) {
             //Close the claw
             clawObj.setPosition(.7);
@@ -291,12 +349,23 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
             clawObj.setPosition(.9);
         }
 
-        if (gamepad2.dpad_left) {
-            setWristPosition(0.683);
+        //Wrist code
+        if (gamepad2.back) {
+            setWristPosition(0.5);
         }
-
+        if (gamepad2.dpad_left) {
+            if (ElapsedTime2.milliseconds() > YTimer) {
+                wristFlow = (wristLPos.getPosition() + 0.1);
+                setWristPosition(wristFlow);
+            }
+            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+        }
         if (gamepad2.dpad_right) {
-            setWristPosition(0.485);
+            if (ElapsedTime2.milliseconds() > YTimer) {
+                wristFlow = (wristLPos.getPosition() - 0.1);
+                setWristPosition(wristFlow);
+            }
+            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }
 
         //Linear Arm movement
@@ -336,6 +405,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
             LinearArmObj.setPower(0);
         }
 
+        //I am speed code
         if (gamepad1.right_trigger > fltNormalFactor) {
             fltForward = gamepad1.right_trigger * -gamepad1.left_stick_y;
             fltStrafe = gamepad1.right_trigger * gamepad1.left_stick_x;
@@ -347,7 +417,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         }
 
 
-        // Send calculated power to wheels
+        // Send calculated power to wheels/ drive code
         frontLeftDrive.setPower(fltForward + fltStrafe + fltPivot);
         frontRightDrive.setPower(fltForward + -fltStrafe + -fltPivot);
         backLeftDrive.setPower(fltForward + -fltStrafe + fltPivot);
@@ -360,6 +430,7 @@ public class BasicOpMode_Iterative_Drive_220103 extends OpMode
         telemetry.addData("Status", "Run Time: " + runtime.toString());
         telemetry.addData("Is Arm Stop pressed:", ArmStop.isPressed());
         telemetry.addData("Arm Position:", armObj.getCurrentPosition());
+        telemetry.addData("Turret Position:", turretObj.getCurrentPosition());
         telemetry.addData("Wrist L Position:", wristLPos.getPosition());
         telemetry.addData("Wrist R Position:", wristRNeg.getPosition());
         telemetry.addData("Was Arm button last action?:", isArmButtonPressed);
