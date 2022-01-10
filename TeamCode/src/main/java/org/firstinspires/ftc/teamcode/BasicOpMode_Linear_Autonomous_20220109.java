@@ -147,6 +147,9 @@ public class BasicOpMode_Linear_Autonomous_20220109 extends LinearOpMode {
             telemetry.update();
             while (!(gamepad1.a || gamepad1.b)) {
                 telemetry.addData("To run autonomous press A : ", "To do nothing press B");
+                telemetry.addData("Alliance Color:", AllianceColor);
+                telemetry.addData("Autonomous Selection:", autonomousSelection);
+                telemetry.update();
                 //if A is pressed the color changes to blue, if B pressed the color red
                 if (gamepad1.a) {
                     // Expect values of red or blue. LOWER CASE!
@@ -160,6 +163,9 @@ public class BasicOpMode_Linear_Autonomous_20220109 extends LinearOpMode {
             if (runAutonomous) {
                 while (!(gamepad2.x || gamepad2.y)) {
                     telemetry.addData("To change color to blue press x : ", "To switch color to red press y");
+                    telemetry.addData("Alliance Color:", AllianceColor);
+                    telemetry.addData("Autonomous Selection:", autonomousSelection);
+                    telemetry.update();
                     //if x is pressed the color changes to blue, if y pressed the color red
                     if (gamepad1.y) {
                         // Expect values of red or blue. LOWER CASE!
@@ -182,6 +188,9 @@ public class BasicOpMode_Linear_Autonomous_20220109 extends LinearOpMode {
                         telemetry.addData("To Select Autonomous: ", "y button = 12");
                         telemetry.addData("To Select Autonomous: ", "b button = 13");
                         telemetry.addData("To Select Autonomous: ", "a button = 14");
+                        telemetry.addData("Alliance Color:", AllianceColor);
+                        telemetry.addData("Autonomous Selection:", autonomousSelection);
+                        telemetry.update();
                         if (gamepad1.dpad_up) {
                             // Expect values of red or blue. LOWER CASE!
                             autonomousSelection = 8;
@@ -225,6 +234,10 @@ public class BasicOpMode_Linear_Autonomous_20220109 extends LinearOpMode {
                         telemetry.addData("To Select Autonomous: ", "y button = 5");
                         telemetry.addData("To Select Autonomous: ", "b button = 6");
                         telemetry.addData("To Select Autonomous: ", "a button = 7");
+
+                        telemetry.addData("Alliance Color:", AllianceColor);
+                        telemetry.addData("Autonomous Selection:", autonomousSelection);
+                        telemetry.update();
                         if (gamepad1.dpad_up) {
                             // Expect values of red or blue. LOWER CASE!
                             autonomousSelection = 1;
