@@ -172,28 +172,30 @@ public class BasicOpMode_Iterative_Drive_220108 extends OpMode
         //Turret code to use once we have found the bounds
         //TODO: Need to slow down motors before reaching the bounds(Use linear arm code)
 
-        if (gamepad2.right_stick_x <= 1 && gamepad2.right_stick_x > 0.05) {
-            if (turretObj.getCurrentPosition() >= -1776) {
-                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-                turretObj.setPower(fltTurret);
-            }else if(turretObj.getCurrentPosition() >= -1200){
+        if (gamepad2.right_stick_x >= -1 && gamepad2.right_stick_x < -0.05) {
+            if(turretObj.getCurrentPosition() >= -1200){
                 turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                 turretObj.setPower(fltTurret * 0.5);
+
+            }else if (turretObj.getCurrentPosition() >= -1776) {
+                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+                turretObj.setPower(fltTurret * 0.3);
             }else{
                 turretObj.setPower(0);
             }
-        }else if(gamepad2.right_stick_x >= -1 && gamepad2.right_stick_x < -0.05){
-            if (turretObj.getCurrentPosition() < 2761){
-                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-                turretObj.setPower(fltTurret);
-            }else if(turretObj.getCurrentPosition() < 2220){
+        }else if(gamepad2.right_stick_x <= 1 && gamepad2.right_stick_x > 0.05){
+            if(turretObj.getCurrentPosition() < 2220){
                 turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
                 turretObj.setPower(fltTurret * 0.5);
+
+            }else if (turretObj.getCurrentPosition() < 2761){
+                turretObj.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                //armObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+                turretObj.setPower(fltTurret * 0.3);
             }else{
                 turretObj.setPower(0);
             }
@@ -335,7 +337,8 @@ public class BasicOpMode_Iterative_Drive_220108 extends OpMode
 
 // If it was flat use open-0.7, close-1
         // fancy rubber arm open-.65, close-1
-        //OG sttings open-0.2, close-0.6
+        //OG stings open-0.2, close-0.6
+
 
         //Claw code
         if (gamepad2.right_bumper) {
@@ -353,16 +356,16 @@ public class BasicOpMode_Iterative_Drive_220108 extends OpMode
         if (gamepad2.back) {
             setWristPosition(0.5);
         }
-        if (gamepad2.dpad_left) {
+        if (gamepad2.dpad_right) {
             if (ElapsedTime2.milliseconds() > YTimer) {
-                wristFlow = (wristLPos.getPosition() + 0.1);
+                wristFlow = (wristLPos.getPosition() + 0.05);
                 setWristPosition(wristFlow);
             }
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
         }
-        if (gamepad2.dpad_right) {
+        if (gamepad2.dpad_left) {
             if (ElapsedTime2.milliseconds() > YTimer) {
-                wristFlow = (wristLPos.getPosition() - 0.1);
+                wristFlow = (wristLPos.getPosition() - 0.05);
                 setWristPosition(wristFlow);
             }
             YTimer = ElapsedTime2.milliseconds() + ghostingTime;
@@ -399,7 +402,7 @@ public class BasicOpMode_Iterative_Drive_220108 extends OpMode
                     //currentLinearArmPosition = LinearArmObj.getTargetPosition();
                 }else {
                     LinearArmObj.setPower(0);
-                    telemetry.addData("Extend limit reached: ", LinearArmObj.getCurrentPosition());
+                    telemetry.addData("Retract limit reached: ", LinearArmObj.getCurrentPosition());
                 }
         } else {
             LinearArmObj.setPower(0);
