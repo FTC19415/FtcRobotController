@@ -6,6 +6,7 @@ import android.graphics.ImageFormat;
 import android.os.Handler;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -42,7 +43,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 
 @Autonomous(name="Autonomous 01/09", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class BasicOpMode_Linear_Autonomous_20220109 extends LinearOpMode {
 
     // Declare OpMode members.

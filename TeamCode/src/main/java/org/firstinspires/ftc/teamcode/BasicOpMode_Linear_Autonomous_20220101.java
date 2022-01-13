@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 
 @Autonomous(name="DEV Autonomous 01/01", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class BasicOpMode_Linear_Autonomous_20220101 extends LinearOpMode {
 
     // Declare OpMode members.

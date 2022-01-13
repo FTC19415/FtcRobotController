@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -23,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 
 @TeleOp(name="OpenCV 01/12", group="Iterative Opmode")
-//@Disabled
+@Disabled
 public class BasicOpMode_Iterative_Drive_220112_Camera_fix extends OpMode
 {
     // Declare OpMode members.
