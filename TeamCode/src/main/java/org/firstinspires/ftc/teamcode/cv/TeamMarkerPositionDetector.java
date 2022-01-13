@@ -57,10 +57,12 @@ public class TeamMarkerPositionDetector implements ITeamMarkerPositionDetector {
         double middleThirdTop = third * 2;
         if (avgX < third) {
             return TeamMarkerPosition.LEFT;
-        }
-        if (avgX >= third && avgX <= middleThirdTop) {
+        } else if (avgX >= third && avgX <= middleThirdTop) {
             return TeamMarkerPosition.CENTER;
+        } else if (avgX > middleThirdTop) {
+            return TeamMarkerPosition.RIGHT;
+        } else {
+            return TeamMarkerPosition.UNKNOWN;
         }
-        return TeamMarkerPosition.RIGHT;
     }
 }

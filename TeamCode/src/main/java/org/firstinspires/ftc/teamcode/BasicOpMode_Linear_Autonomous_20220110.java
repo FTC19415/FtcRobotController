@@ -357,14 +357,15 @@ public class BasicOpMode_Linear_Autonomous_20220110 extends LinearOpMode {
 
         }
 
+        //Make an FtcCamera WebCam here and initialize it
+        OpenCVWrapper.load();
+        webcam.init(hardwareMap);
+
+
         //telemetry.addData(telemetry.addData(recognitions.getLabel);
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-
-//Make an FtcCamera WebCam here and initialize it
-        OpenCVWrapper.load();
-        webcam.init(hardwareMap);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();

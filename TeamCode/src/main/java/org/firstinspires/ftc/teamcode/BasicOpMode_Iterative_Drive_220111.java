@@ -413,7 +413,7 @@ public class BasicOpMode_Iterative_Drive_220111 extends OpMode
             setWristPosition(wristFlow);
         }
         if (gamepad2.dpad_left) {
-            wristFlow = (wristLPos.getPosition() + 0.05);
+            wristFlow = (wristLPos.getPosition() - 0.05);
             setWristPosition(wristFlow);
         }
 
