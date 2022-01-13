@@ -129,9 +129,11 @@ public class BasicOpMode_Iterative_Drive_220111 extends OpMode
         int ghostingTime;
         double fltNormalFactor;
         double wristFlow;
+        double trigger;
         int currentLinearArmPosition = 0;
         ghostingTime = 200;
-        fltNormalFactor = 0.2;
+        fltNormalFactor = 0.4;
+        trigger = 0.2;
         intArmPosition = 0;
         intArmPositionPick = 6860; //new robot changed from 5800 to 6000 20211114
         intArmPositionDropMid = 4700;
@@ -214,7 +216,7 @@ public class BasicOpMode_Iterative_Drive_220111 extends OpMode
 
 
         //This controls ALL arm movement
-        if (gamepad2.left_trigger > fltNormalFactor) {
+        if (gamepad2.left_trigger > trigger) {
                 if (cappingTrigger == false) {
                     cappingTimer = runtime.milliseconds();
                     cappingTrigger = true;
@@ -362,7 +364,7 @@ public class BasicOpMode_Iterative_Drive_220111 extends OpMode
 
 
         // Carousel Spinner motor section
-        if (gamepad1.left_trigger > fltNormalFactor) {
+        if (gamepad1.left_trigger > trigger) {
             carouselPower = 0.5;
             if (gamepad1.left_bumper) {
                 carousel.setPower(-carouselPower);
@@ -407,25 +409,19 @@ public class BasicOpMode_Iterative_Drive_220111 extends OpMode
             setWristPosition(0.5);
         }
         if (gamepad2.dpad_right) {
-            if (ElapsedTime2.milliseconds() > YTimer) {
-                wristFlow = (wristLPos.getPosition() + 0.05);
-                setWristPosition(wristFlow);
-            }
-            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+            wristFlow = (wristLPos.getPosition() + 0.05);
+            setWristPosition(wristFlow);
         }
         if (gamepad2.dpad_left) {
-            if (ElapsedTime2.milliseconds() > YTimer) {
-                wristFlow = (wristLPos.getPosition() - 0.05);
-                setWristPosition(wristFlow);
-            }
-            YTimer = ElapsedTime2.milliseconds() + ghostingTime;
+            wristFlow = (wristLPos.getPosition() + 0.05);
+            setWristPosition(wristFlow);
         }
 
         //Linear Arm movement
 
 
         //I am speed code
-        if (gamepad1.right_trigger > fltNormalFactor) {
+        if (gamepad1.right_trigger > trigger) {
             fltForward = gamepad1.right_trigger * -gamepad1.left_stick_y;
             fltStrafe = gamepad1.right_trigger * gamepad1.left_stick_x;
             fltPivot = gamepad1.right_trigger * gamepad1.right_stick_x;
