@@ -3,8 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.Servo;;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -24,7 +23,6 @@ public class BasicOpMode_Iterative_Drive_220117 extends OpMode
     private DcMotor LinearArmObj = null;
     private DcMotor turretObj = null;
     private Servo clawObj = null;
-    private TouchSensor ArmStop;
     private boolean isArmButtonPressed = true;
     private Servo wristLPos = null;
     private Servo wristRNeg = null;
@@ -60,7 +58,6 @@ public class BasicOpMode_Iterative_Drive_220117 extends OpMode
         turretObj = hardwareMap.get(DcMotor.class, "turret");
         clawObj = hardwareMap.get(Servo.class, "Claw");
         LinearArmObj = hardwareMap.get(DcMotor.class, "LinearArm");
-        ArmStop = hardwareMap.get(TouchSensor.class, "ArmStop");
         wristLPos = hardwareMap.get(Servo.class, "LeftWrist");
         wristRNeg = hardwareMap.get(Servo.class, "RightWrist");
 
@@ -452,7 +449,6 @@ public class BasicOpMode_Iterative_Drive_220117 extends OpMode
         telemetry.addData("Linear Arm position:", LinearArmObj.getCurrentPosition());
         telemetry.addData("Status", "Run Time: " + runtime.milliseconds());
         telemetry.addData("Status", "Capping Timer: " + cappingTimer);
-        telemetry.addData("Is Arm Stop pressed:", ArmStop.isPressed());
         telemetry.addData("Arm Position:", armObj.getCurrentPosition());
         telemetry.addData("Turret Position:", turretObj.getCurrentPosition());
         telemetry.addData("Wrist L Position:", wristLPos.getPosition());

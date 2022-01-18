@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -75,7 +74,6 @@ public class BasicOpMode_Linear_Autonomous_20220117 extends LinearOpMode {
     double backRightPower;
     double carouselPower;
     private DcMotor armObj = null;
-    private TouchSensor ArmStop;
     ElapsedTime ElapsedTime2;
     boolean runAutonomous;
     String AllianceColor = null;
@@ -122,7 +120,6 @@ public class BasicOpMode_Linear_Autonomous_20220117 extends LinearOpMode {
         clawObj = hardwareMap.get(Servo.class, "Claw");
         armObj = hardwareMap.get(DcMotor.class, "Arm");
         turretObj = hardwareMap.get(DcMotor.class, "turret");
-        ArmStop = hardwareMap.get(TouchSensor.class, "ArmStop");
         wristLPos = hardwareMap.get(Servo.class, "LeftWrist");
         wristRNeg = hardwareMap.get(Servo.class, "RightWrist");
 
@@ -575,7 +572,7 @@ public class BasicOpMode_Linear_Autonomous_20220117 extends LinearOpMode {
                 strafe(0.5, 1600, "left");
 
                 if (crsRoute == "barrier") {
-                    turn(0.3, 50, "right");
+                    turn(0.3, 125, "right");
                     move_forward(.5, 4500);
                 } else {
                     move_forward(.5, 300);
@@ -660,6 +657,7 @@ public class BasicOpMode_Linear_Autonomous_20220117 extends LinearOpMode {
                 strafe(0.5, 1600, "right");
 
                 if (crsRoute == "barrier") {
+                    turn(0.3, 50, "left");
                     move_forward(.5, 5000);
                 } else {
                     move_forward(.5, 400);
