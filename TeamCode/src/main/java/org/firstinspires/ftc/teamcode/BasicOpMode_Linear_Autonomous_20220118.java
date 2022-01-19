@@ -2,7 +2,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -12,8 +11,8 @@ import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.Camera;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraCaptureSession;
 import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.cv.CameraPosition;
 import org.firstinspires.ftc.teamcode.cv.FtcCamera;
 import org.firstinspires.ftc.teamcode.cv.OpenCVWrapper;
@@ -21,12 +20,6 @@ import org.firstinspires.ftc.teamcode.cv.TeamMarkerPosition;
 import org.firstinspires.ftc.teamcode.cv.TeamMarkerPositionDetector;
 import org.firstinspires.ftc.teamcode.cv.Webcam;
 import org.opencv.core.Mat;
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
-import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer.CameraDirection;
-import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
-
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -47,9 +40,9 @@ import java.util.concurrent.atomic.AtomicReference;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Autonomous 01/17", group="Linear Opmode")
-@Disabled
-public class BasicOpMode_Linear_Autonomous_20220117 extends LinearOpMode {
+@Autonomous(name="Autonomous 01/18", group="Linear Opmode")
+//@Disabled
+public class BasicOpMode_Linear_Autonomous_20220118 extends LinearOpMode {
 
     // Declare OpMode members.
     public final FtcCamera webcam = new Webcam();

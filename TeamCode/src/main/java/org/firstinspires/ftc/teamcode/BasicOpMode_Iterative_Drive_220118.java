@@ -1,17 +1,19 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;;
+import com.qualcomm.robotcore.hardware.LED;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
+;
 
-@TeleOp(name="Mechanum Drive New Robot 01/17", group="Iterative Opmode")
-@Disabled
-public class BasicOpMode_Iterative_Drive_220117 extends OpMode
+
+@TeleOp(name="Mechanum Drive New Robot 01/18", group="Iterative Opmode")
+//@Disabled
+public class BasicOpMode_Iterative_Drive_220118 extends OpMode
 {
     // Declare OpMode members.
     private ElapsedTime runtime = new ElapsedTime();
@@ -24,6 +26,12 @@ public class BasicOpMode_Iterative_Drive_220117 extends OpMode
     private DcMotor LinearArmObj = null;
     private DcMotor turretObj = null;
     private Servo clawObj = null;
+    private LED LEDBR = null;
+    private LED LEDBG = null;
+    private LED LEDFR = null;
+    private LED LEDFG = null;
+    private LED LEDTR = null;
+    private LED LEDTG = null;
     private boolean isArmButtonPressed = true;
     private Servo wristLPos = null;
     private Servo wristRNeg = null;
@@ -61,6 +69,12 @@ public class BasicOpMode_Iterative_Drive_220117 extends OpMode
         LinearArmObj = hardwareMap.get(DcMotor.class, "LinearArm");
         wristLPos = hardwareMap.get(Servo.class, "LeftWrist");
         wristRNeg = hardwareMap.get(Servo.class, "RightWrist");
+        LEDBR = hardwareMap.get(LED.class, "LEDBR");
+        LEDBG = hardwareMap.get(LED.class, "LEDBG");
+        LEDFR = hardwareMap.get(LED.class, "LEDFR");
+        LEDFG = hardwareMap.get(LED.class, "LEDFG");
+        LEDTR = hardwareMap.get(LED.class, "LEDTR");
+        LEDTG = hardwareMap.get(LED.class, "LEDTG");
 
         LinearArmObj.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         LinearArmObj.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -84,6 +98,7 @@ public class BasicOpMode_Iterative_Drive_220117 extends OpMode
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
+
     }
 
 
@@ -444,6 +459,28 @@ public class BasicOpMode_Iterative_Drive_220117 extends OpMode
         backLeftDrive.setPower(fltForward + -fltStrafe + fltPivot);
         backRightDrive.setPower(fltForward + fltStrafe + -fltPivot);
 
+        if (runtime.milliseconds() >= 85000){
+            LEDBR.enable(true);
+            LEDFR.enable(true);
+            LEDFR.enable(true);
+            LEDBG.enable(true);
+            LEDFG.enable(true);
+            LEDTG.enable(true);
+        }else if (runtime.milliseconds() >= 115000){
+            LEDBG.enable(false);
+            LEDFG.enable(false);
+            LEDTG.enable(false);
+            LEDBR.enable(true);
+            LEDFR.enable(true);
+            LEDTR.enable(true);
+        }else{
+            LEDBG.enable(true);
+            LEDFG.enable(true);
+            LEDTG.enable(true);
+            LEDBR.enable(false);
+            LEDFR.enable(false);
+            LEDTR.enable(false);
+        }
 
 
         // Show the elapsed game time and wheel power.
