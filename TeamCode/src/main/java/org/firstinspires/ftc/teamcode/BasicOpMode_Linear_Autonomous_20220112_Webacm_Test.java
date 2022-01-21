@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
@@ -61,7 +60,6 @@ public class BasicOpMode_Linear_Autonomous_20220112_Webacm_Test extends LinearOp
     double backRightPower;
     double carouselPower;
     private DcMotor armObj = null;
-    private TouchSensor ArmStop;
     ElapsedTime ElapsedTime2;
     boolean runAutonomous;
     String AllianceColor = null;
@@ -97,7 +95,6 @@ public class BasicOpMode_Linear_Autonomous_20220112_Webacm_Test extends LinearOp
         clawObj = hardwareMap.get(Servo.class, "Claw");
         armObj = hardwareMap.get(DcMotor.class, "Arm");
         turretObj = hardwareMap.get(DcMotor.class, "turret");
-        ArmStop = hardwareMap.get(TouchSensor.class, "ArmStop");
         wristLPos = hardwareMap.get(Servo.class, "LeftWrist");
         wristRNeg = hardwareMap.get(Servo.class, "RightWrist");
 
