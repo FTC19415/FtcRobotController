@@ -241,7 +241,7 @@ public class BasicOpMode_Iterative_Drive_220120 extends OpMode
                 }else{
                     if (cappingTimer + 250 <= runtime.milliseconds()){
                         LinearArmObj.setTargetPosition(1700);
-                        setWristPosition(0.75);
+                        setWristPosition(0.25);
                         if (LinearArmObj.getCurrentPosition() >= 1700){
                             LinearArmObj.setPower(0);
                         }else {
@@ -430,11 +430,11 @@ public class BasicOpMode_Iterative_Drive_220120 extends OpMode
         if (gamepad2.back) {
             setWristPosition(0.5);
         }
-        if (gamepad2.dpad_right) {
+        if (gamepad2.dpad_left) {
             wristFlow = (wristLPos.getPosition() + 0.05);
             setWristPosition(wristFlow);
         }
-        if (gamepad2.dpad_left) {
+        if (gamepad2.dpad_right) {
             wristFlow = (wristLPos.getPosition() - 0.05);
             setWristPosition(wristFlow);
         }
