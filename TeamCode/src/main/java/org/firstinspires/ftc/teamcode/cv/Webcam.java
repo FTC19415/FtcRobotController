@@ -19,11 +19,15 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraException;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.CameraManager;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.network.CallbackLooper;
+import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.robotcore.internal.system.ContinuationSynchronizer;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 import org.opencv.android.Utils;
 import org.opencv.core.Mat;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.concurrent.BlockingQueue;
@@ -154,10 +158,21 @@ public class Webcam implements FtcCamera {
         if (cameraName == null) return null;
         Mat mat = new Mat();
         try {
-            Utils.bitmapToMat(frameQueue.take(), mat);
+            Bitmap bmp = frameQueue.take();
+            saveBitmap(bmp);
+            Utils.bitmapToMat(bmp, mat);
         } catch (InterruptedException e) {
             return null;
         }
         return mat;
+    }
+
+    private void saveBitmap(Bitmap bitmap){
+        File file = new File(AppUtil.ROBOT_DATA_DIR, "Capture.jpg");
+        try{
+            try(FileOutputStream outputStream= new FileOutputStream(file)){
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream);
+            }
+        }catch (IOException ignored){}
     }
 }
