@@ -18,7 +18,7 @@ public class Potentiometer extends LinearOpMode {
     public void runOpMode() {
         // Get the potentiometer and motor from hardwareMap
         potentiometer = hardwareMap.get(AnalogInput.class, "Potentiometer");
-        ArmObj = hardwareMap.get(DcMotor.class, "Arm");
+        //ArmObj = hardwareMap.get(DcMotor.class, "Arm");
         //motor = hardwareMap.get(DcMotor.class, "Motor");
 
         // Loop while the Op Mode is running
@@ -28,11 +28,11 @@ public class Potentiometer extends LinearOpMode {
             currentVoltage = potentiometer.getVoltage();
 
             // Turn the motor on or off based on the potentiometer’s position
-            if (currentVoltage < 1.65) {
-                ArmObj.setPower(0);
-            } else {
-                ArmObj.setPower(0.3);
-            }
+//            if (currentVoltage < 1.65) {
+//                ArmObj.setPower(0);
+//            } else {
+//                ArmObj.setPower(0.3);
+//            }
 
             // Show the potentiometer’s voltage in telemetry
             telemetry.addData("Potentiometer voltage", currentVoltage);
