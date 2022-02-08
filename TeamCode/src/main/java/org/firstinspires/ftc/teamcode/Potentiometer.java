@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 @TeleOp
 public class Potentiometer extends LinearOpMode {
     // Define variables for our potentiometer and motor
-    AnalogInput potentiometer;
-    DcMotor ArmObj;
+    AnalogInput armPotentiometer;
+    DcMotor armObj = null;
 
     // Define variable for the current voltage
     double currentVoltage;
@@ -17,26 +17,51 @@ public class Potentiometer extends LinearOpMode {
     @Override
     public void runOpMode() {
         // Get the potentiometer and motor from hardwareMap
-        potentiometer = hardwareMap.get(AnalogInput.class, "Potentiometer");
-        //ArmObj = hardwareMap.get(DcMotor.class, "Arm");
-        //motor = hardwareMap.get(DcMotor.class, "Motor");
+        armPotentiometer = hardwareMap.get(AnalogInput.class, "armPot");
+        armObj = hardwareMap.get(DcMotor.class, "Arm");
+
 
         // Loop while the Op Mode is running
         waitForStart();
         while (opModeIsActive()) {
             // Update currentVoltage from the potentiometer
-            currentVoltage = potentiometer.getVoltage();
+            currentVoltage = armPotentiometer.getVoltage();
 
-            // Turn the motor on or off based on the potentiometer’s position
-//            if (currentVoltage < 1.65) {
-//                ArmObj.setPower(0);
-//            } else {
-//                ArmObj.setPower(0.3);
-//            }
+            if (gamepad2.y) {
+                if (currentVoltage <= 2.1 && currentVoltage >= 2.05){
+                    armPotentiometer.getVoltage();
+                    armObj.setPower(0);
+                }else{
+                    telemetry.addData("Potentiometer arm voltage", currentVoltage);
+                    telemetry.update();
+//                    while (!(armPotentiometer.getVoltage() == 2)) {
+//                        armPotentiometer.getVoltage();
+                        armObj.setPower(0.3);
+//                    }
+//                    armObj.setPower(0);
+//                    armPotentiometer.getVoltage();
+                }
+            }
+            armPotentiometer.getVoltage();
+
+            if (currentVoltage <= 2.6 && currentVoltage >= 2.55){
+                armPotentiometer.getVoltage();
+                armObj.setPower(0);
+            }else{
+                telemetry.addData("Potentiometer arm voltage", currentVoltage);
+                telemetry.update();
+//                    while (!(armPotentiometer.getVoltage() == 2)) {
+//                        armPotentiometer.getVoltage();
+                armObj.setPower(0.3);
+//                    }
+//                    armObj.setPower(0);
+//                    armPotentiometer.getVoltage();
+            }
+            armPotentiometer.getVoltage();
 
             // Show the potentiometer’s voltage in telemetry
-            telemetry.addData("Potentiometer voltage", currentVoltage);
-            telemetry.update();
+//            telemetry.addData("Potentiometer voltage", currentVoltage);
+//            telemetry.update();
         }
     }
 }
