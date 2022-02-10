@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -13,7 +14,7 @@ import com.qualcomm.robotcore.util.Range;
 
 
 @TeleOp(name="Mechanum Drive New Robot 02/01", group="Iterative Opmode")
-//@Disabled
+@Disabled
 public class BasicOpMode_Iterative_Drive_220201 extends OpMode
 {
     // Declare OpMode members.
