@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.AnalogInput;
@@ -212,7 +213,6 @@ public class BasicOpMode_Iterative_Drive_220209 extends OpMode
 
 
         //This controls ALL arm movement
-
         //Capping
         if (gamepad2.left_trigger > trigger) {
                 if (cappingTrigger == false) {
@@ -401,7 +401,7 @@ public class BasicOpMode_Iterative_Drive_220209 extends OpMode
 
         // Carousel Spinner motor section
         if (gamepad1.left_trigger > trigger) {
-            carouselPower = 0.5;
+            carouselPower = 0.7;
             if (gamepad1.left_bumper) {
                 carousel.setPower(-carouselPower);
             } else if (gamepad1.right_bumper) {
@@ -411,6 +411,7 @@ public class BasicOpMode_Iterative_Drive_220209 extends OpMode
                 carousel.setPower(0);
             }
         }else{
+            carouselPower = 0.5;
             if (gamepad1.left_bumper) {
                 carousel.setPower(-carouselPower);
             } else if (gamepad1.right_bumper) {
