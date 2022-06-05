@@ -2,6 +2,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -43,7 +44,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 
 @Autonomous(name="Autonomous 02/15", group="Linear Opmode")
-//@Disabled
+@Disabled
 public class BasicOpMode_Linear_Autonomous_20220215 extends LinearOpMode {
 
     // Declare OpMode members.
@@ -516,7 +517,7 @@ public class BasicOpMode_Linear_Autonomous_20220215 extends LinearOpMode {
                 turn(0.5, 675, "left");
                 armObj.setTargetPosition(elementDropLevelDegrees);
                 armObj.setPower(1);
-                setTurretPosition(1.7);
+                setTurretPosition(1.3);
                 if (elementDropLevel == 3 ){
                     setWristPosition(0.4);
                     sleep(1000);
@@ -543,7 +544,7 @@ public class BasicOpMode_Linear_Autonomous_20220215 extends LinearOpMode {
                 // Carousel code that drives to the carousel and goes into the red box
                 armObj.setTargetPosition(elementDropLevelDegrees);
                 armObj.setPower(1);
-                setTurretPosition(1.7);
+                setTurretPosition(1.3);
                 if (elementDropLevel == 3 ){
                     setWristPosition(0.46);
                 }else {
@@ -625,7 +626,7 @@ public class BasicOpMode_Linear_Autonomous_20220215 extends LinearOpMode {
                 move_forward(-.5, 600);
                 armObj.setTargetPosition(elementDropLevelDegrees);
                 armObj.setPower(1);
-                setTurretPosition(1.7);
+                setTurretPosition(1.3);
                 if (elementDropLevel == 3 ){
                     setWristPosition(0.4);
                 }else {
@@ -652,7 +653,7 @@ public class BasicOpMode_Linear_Autonomous_20220215 extends LinearOpMode {
                 // Courosel code: drop the duck and park in red box
                 armObj.setTargetPosition(elementDropLevelDegrees);
                 armObj.setPower(1);
-                setTurretPosition(1.7);
+                setTurretPosition(1.3);
                 sleep(1000);
                 if (elementDropLevel == 3 ){
                     setWristPosition(0.4);
@@ -909,7 +910,7 @@ public class BasicOpMode_Linear_Autonomous_20220215 extends LinearOpMode {
             }else{
                 telemetry.addData("Potentiometer up turret voltage", turretCurrentVoltage);
                 telemetry.update();
-                turretObj.setPower(-0.3);
+                turretObj.setPower(-0.1);
 
             }
         }else if(inputPositionT < turretCurrentVoltage){
@@ -921,7 +922,7 @@ public class BasicOpMode_Linear_Autonomous_20220215 extends LinearOpMode {
                 telemetry.update();
 //                    while (!(turretPotentiometer.getVoltage() == 2)) {
 //                        turretPotentiometer.getVoltage();
-                turretObj.setPower(0.3);
+                turretObj.setPower(0.1);
 //                    }
 //                    turretObj.setPower(0);
 //                    turretPotentiometer.getVoltage();
